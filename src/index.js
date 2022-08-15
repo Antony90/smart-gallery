@@ -6,7 +6,7 @@ import { store, rrfProps } from './store';
 import { Provider } from 'react-redux';
 import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
 
-import { CssBaseline } from '@mui/material';
+import { BrowserRouter } from 'react-router-dom';
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
@@ -18,8 +18,9 @@ root.render(
   // <React.StrictMode>
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
-        <CssBaseline />
-        <App />
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
       </ReactReduxFirebaseProvider>
     </Provider>
   // </React.StrictMode>

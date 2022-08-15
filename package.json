@@ -22,6 +22,7 @@
     "react-file-base64": "^1.0.3",
     "react-redux": "^8.0.2",
     "react-redux-firebase": "^3.11.0",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
     "redux-firestore": "^1.0.0",
