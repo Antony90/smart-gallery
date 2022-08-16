@@ -1,19 +1,29 @@
 import axios from "axios";
+import { toast } from 'react-toastify';
 
-const url = "http://localhost:5000";
+const proxy = "http://localhost:5000";
 
-async function getPredictions(imgBase64List) {
-    const data = {
-        images: imgBase64List,
-    };
-
-    return await axios.post(url + "/classify", data)
+async function getPredictions(images, predictionToast) {
+    return await axios.post(proxy + "/classify", { images })
         .then(resp => resp.data.tags)
         .catch(error => {
+            var msg;
             if (error.response) {
-                console.log(error.response.data)
+                msg = error.response.data;
+            } else if (error.request) {
+                msg = error.request;
+            } else {
+                msg = error.message;
             }
-        });
+
+            toast.update(predictionToast, { 
+                type: 'error', 
+                render: `Error: ${msg}`, 
+                isLoading: false, 
+                autoClose: 3000 
+            });
+            
+        })
 }
 
 export default getPredictions;
