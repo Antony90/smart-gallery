@@ -7,6 +7,7 @@
     "@emotion/styled": "^11.10.0",
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.8.4",
+    "@mui/lab": "^5.0.0-alpha.95",
     "@mui/material": "^5.10.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
@@ -24,6 +25,7 @@
     "react-toastify": "^9.0.8",
     "redux": "^4.2.0",
     "redux-firestore": "^1.0.0",
+    "redux-thunk": "^2.4.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -9,7 +9,7 @@ const PhotoItem = ({ id, onClick, src, imgName, tags }) => {
     return <ImageListItem
         component={Button}
         key={id}
-        sx={{ p: 0 }}
+        sx={{ p: 0, display: 'inline' }}
         onClick={onClick}
     >
         { src ? 
@@ -22,9 +22,7 @@ const PhotoItem = ({ id, onClick, src, imgName, tags }) => {
             /> : <Skeleton variant='rounded' width={280} height={200}/>
         }
         <ImageListItemBar
-            subtitle={tags
-                .map(tag => tag[0].toUpperCase() + tag.substring(1))
-                .join(", ")}
+            subtitle={tags.join(", ")}
             sx={{
                 borderRadius: "5px",
                 textTransform: "none",

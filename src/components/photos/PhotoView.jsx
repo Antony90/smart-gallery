@@ -4,7 +4,12 @@ import {
   CardContent,
   IconButton,
   Tooltip,
-  CardActions
+  CardActions,
+  Chip,
+  Typography,
+  Stack,
+  Divider,
+  TextField
 } from "@mui/material";
 
 import DeleteIcon from '@mui/icons-material/DeleteRounded';
@@ -13,8 +18,9 @@ import LeftIcon from '@mui/icons-material/ChevronLeftRounded';
 import DownloadIcon from '@mui/icons-material/CloudDownload';
 
 import { saveAs } from 'file-saver';
-import { useFirebase, useFirestore } from 'react-redux-firebase';
-import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { addPhotoTag, deletePhoto, deletePhotoTag } from "../../store/actions/photoActions";
+import { Box } from "@mui/system";
 
 const photoNav = {
   position: 'fixed', 
@@ -26,35 +32,55 @@ const photoNav = {
 
 // TODO db stores date, size, dims
 const PhotoView = ({ url, name, tags, onClickNext, id }) => {
-  const storage = useFirebase().storage();
-  const db = useFirestore();
+  const dispatch = useDispatch();
+  const onClickDelete = () => dispatch(deletePhoto(id));
+  const onClickDeleteTag = (tag) => dispatch(deletePhotoTag(id, tag));
+  const onAddTag = (tag) => dispatch(addPhotoTag(id, tag));
 
-  const deletePhoto = async () => {
-    await db.collection('photos').doc(id).delete();
-    await storage.ref().child(id).delete();
-    toast.success(`Deleted photo ${name}.`);
-  }
 
   return (
     <>
       <Card>
         <CardMedia
           component="img"
-          height={600}
+          height={500}
           image={url}
           />
-        <CardContent>
-          Name: {name}, Tags: {tags}
+        <CardContent sx={{ pb: 0 }}>
+          <Stack direction='row' spacing={2} divider={<Divider orientation="vertical" flexItem />} >
+            <Box sx={{ width: '46%'}}>
+              <Typography variant='h6'>Name</Typography>
+              <Typography variant='subtitle'>{name}</Typography> 
+            </Box>
+
+            <Stack direction="row" spacing={0} flexWrap='wrap' >
+              { tags.map(tag => 
+                <Chip sx={{ mr: 1, mb: '4px' }} key={tag} label={tag} onDelete={() => onClickDeleteTag(tag)} variant='outlined' color='primary' />) }
+            </Stack>
+          </Stack>
         </CardContent>
-        <CardActions>
+        <CardActions sx={{ display: 'block' }}>
           <Tooltip title='Delete'>
-            <IconButton onClick={deletePhoto}><DeleteIcon /></IconButton>
+            <IconButton onClick={onClickDelete}><DeleteIcon /></IconButton>
           </Tooltip>
           <Tooltip title='Download Image'>
             <IconButton onClick={() => saveAs(url, 'out.jpg')}><DownloadIcon /></IconButton>
           </Tooltip>
+          <TextField 
+            variant='outlined' 
+            size='small' 
+            label='Add tag' 
+            sx={{ float: 'right', mr: '5px', mb: `10px` }}
+            onKeyDown={(e) => {
+              if (e.key == 'Enter' && e.target.value) {
+                onAddTag(e.target.value);
+                e.target.value = ''
+              }
+            }}
+          />
         </CardActions>
       </Card>
+
       <Tooltip title='Previous Photo' sx={{ ...photoNav, left: '30%' }}>
         <IconButton disableRipple onClick={() => onClickNext(-1)}><LeftIcon /></IconButton>
       </Tooltip>

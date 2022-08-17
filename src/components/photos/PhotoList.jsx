@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, createRef, useEffect } from "react";
 
 import {
     ImageList,
@@ -8,6 +8,7 @@ import {
 import PhotoItem from "./PhotoItem";
 import PhotosSkeleton from "./PhotosSkeleton";
 import PhotoView from "./PhotoView";
+import { Masonry } from '@mui/lab/'
 import { isLoaded } from "react-redux-firebase";
 
 const PhotoList = ({ photos }) => {
@@ -42,15 +43,16 @@ const PhotoList = ({ photos }) => {
                     />
                 }
             </Dialog>
-            <ImageList
+            <Masonry
                 sx={{ m: 0 }}
-                variant="masonry"
-                cols={5}
-                gap={8}
-                rowHeight="auto"
+                // variant="masonry"
+                columns={5}
+                spacing={1}
+                ref={photoListRef}                
+                // rowHeight="auto"
             >
                 {photoListComponent}
-            </ImageList>
+            </Masonry>
         </>
     );
 };

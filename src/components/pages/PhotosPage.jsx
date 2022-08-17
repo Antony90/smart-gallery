@@ -19,5 +19,5 @@ const PhotosPage = ({ photos }) => {
 
 export default compose(
     connect(state => ({ photos: state.firestore.ordered.photos })),
-    firestoreConnect(['photos']),
+    firestoreConnect([{ collection: 'photos', orderBy: ['createdAt', 'desc'] }]),
 )(PhotosPage);
