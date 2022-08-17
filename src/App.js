@@ -35,20 +35,20 @@ function App() {
     ]
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <>
             <Navigation drawerWidth={250} navItems={navItems} nestedItems={nestedItems} />
             <Box sx={{ width: '100%' }}>
                 <Toolbar />
-                <Paper variant='outlined' sx={{ height: 'inherit', m: '10px',p: '5px' }}>
+                <Box sx={{ border: '1px solid rgba(255,0,0,0.3)', borderRadius: '10px', m: '10px',p: '10px' }}>
                     <Routes>
                         <Route path='/photos' element={<PhotosPage />} />
                         <Route path='/albums/:id' element={<AlbumPhotosPage />} />
                         <Route path='/albums' element={<AlbumsPage />} />
                         <Route path='/' element={<Dashboard />} />
                     </Routes>
-                </Paper>
+                </Box>
             </Box>
-        </Box>
+        </>
     );
 };
 

@@ -1,8 +1,6 @@
 import {
     CssBaseline,
-    AppBar,
     Toolbar,
-    Typography,
     Drawer,
     List,
     ListItemButton,
@@ -11,8 +9,7 @@ import {
     IconButton,
     ListItemText,
     ListItemIcon,
-    ListItemSecondaryAction
-
+    ListItemSecondaryAction,
 } from '@mui/material';
 
 import ExpandLess from '@mui/icons-material/ExpandLessRounded';
@@ -20,6 +17,7 @@ import ExpandMore from '@mui/icons-material/ExpandMoreRounded';
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import AppBar from './AppBar';
 
 
 const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
@@ -30,25 +28,17 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
     return (
         <>
             <CssBaseline />
-            <AppBar
-                position="fixed"
-                sx={{ zIndex: 1300 }}
-            >
-                <Toolbar>
-                    <Typography variant="h6" component="div">
-                        Smart Gallery
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-
+            <AppBar />
             <Drawer
                 sx={{
                     width: drawerWidth,
                     flexShrink: 0,
                     "& .MuiDrawer-paper": {
                         width: drawerWidth,
-                        boxSizing: "border-box"
+                        boxSizing: "border-box",
+                        borderRight: '1px solid red'//TODO use theme primary
                     },
+                    
                 }}
                 variant="permanent"
                 anchor="left"
@@ -57,27 +47,30 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
                 <Divider />
                 <List>
                     {navItems.map(({ path, text, icon }) => (
-                        <ListItemButton 
-                            key={path} 
-                            onClick={ () => navigate(path) }
-                        >
-                            { icon && <ListItemIcon>{icon}</ListItemIcon> }
-                            <ListItemText primary={text} />
+                        <>
+                            <ListItemButton 
+                                key={path} 
+                                onClick={ () => navigate(path) }
+                            >
+                                { icon && <ListItemIcon>{icon}</ListItemIcon> }
+                                <ListItemText primary={text} />
 
-                            { /* for the Album list item, add button to
-                                 control visibility of nested list items (for specific albums) */ }
-                            { text === 'Albums' && 
-                                <ListItemSecondaryAction>
-                                    <IconButton onClick={(e) => {
-                                        // lets you click on the expand button without it going to /albums
-                                        e.stopPropagation(); 
-                                        setOpen(curr => !curr);
-                                    }} >
-                                        { open ? <ExpandLess /> : <ExpandMore /> }
-                                    </IconButton>
-                                </ListItemSecondaryAction> 
-                            }
-                        </ListItemButton>
+                                { /* for the Album list item, add button to
+                                    control visibility of nested list items (for specific albums) */ }
+                                { text === 'Albums' && 
+                                    <ListItemSecondaryAction>
+                                        <IconButton onClick={(e) => {
+                                            // lets you click on the expand button without it going to /albums
+                                            e.stopPropagation(); 
+                                            setOpen(curr => !curr);
+                                        }} >
+                                            { open ? <ExpandLess /> : <ExpandMore /> }
+                                        </IconButton>
+                                    </ListItemSecondaryAction> 
+                                }
+                            </ListItemButton>
+                            <Divider variant="middle" component="li" sx={{ my: '3px' }}/>
+                        </>
                     ))}
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <List component="div" disablePadding>

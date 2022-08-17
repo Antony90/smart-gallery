@@ -12,11 +12,12 @@ const UploadImages = ({ style }) => {
     const onSelectPhotos = photos => dispatch(uploadPhotos(photos));
 
     return (
-        <Fab variant="extended" size="large" color="secondary" component='label' sx={style}>
+        <Fab variant="extended" size="large" color="primary" component='label' sx={style}>
             <div style={{ display: 'none' }}>
                 <FileBase64 multiple={true} onDone={onSelectPhotos} />
             </div>
-            <UploadIcon />
+            <UploadIcon sx={{ mr: '9px' }}/>
+            Upload
         </Fab>
     );
 }

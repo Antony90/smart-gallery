@@ -1,4 +1,5 @@
 import { useState, createRef, useEffect } from "react";
+import { connect } from 'react-redux'
 
 import {
     ImageList,
@@ -11,14 +12,20 @@ import PhotoView from "./PhotoView";
 import { Masonry } from '@mui/lab/'
 import { isLoaded } from "react-redux-firebase";
 
-const PhotoList = ({ photos }) => {
+const PhotoList = ({ photos, filter }) => {
     // Photos array index for currently selected image
     // -1 => no image selected
     const [selectedImg, setSelectedImg] = useState(-1);
     
     if(!isLoaded(photos)) return <PhotosSkeleton />;
 
-    const photoListComponent = photos.map(({ id, url, name, tags }, idx) => (
+    const filteredPhotos = filter ?
+        photos.filter(({ name, tags }) => (
+            name.includes(filter) || tags.some(tag => tag.includes(filter))
+        ))
+        : photos;
+
+    const photoListComponent = filteredPhotos.map(({ id, url, name, tags }, idx) => (
         <PhotoItem
             id={id}
             onClick={() => setSelectedImg(idx)}
@@ -34,27 +41,31 @@ const PhotoList = ({ photos }) => {
             <Dialog open={selectedImg > -1} onClose={() => setSelectedImg(-1)}>
                 { selectedImg > -1 && 
                     <PhotoView 
-                        {...photos[selectedImg]} 
+                        {...filteredPhotos[selectedImg]} 
                         // update current image index, navigates to next/previous photo
                         onClickNext={offset => {
-                            const n = photos.length;
+                            const n = filteredPhotos.length;
                             setSelectedImg(idx => ((idx + offset % n) + n) % n)
                         }}
                     />
                 }
             </Dialog>
-            <Masonry
+            <ImageList
                 sx={{ m: 0 }}
-                // variant="masonry"
-                columns={5}
-                spacing={1}
-                ref={photoListRef}                
-                // rowHeight="auto"
+                variant="standard"
+                cols={5}
+                gap={8}
+                rowHeight={300}
             >
                 {photoListComponent}
-            </Masonry>
+            </ImageList>
         </>
     );
 };
 
-export default PhotoList;
+const mapStateToProps = (state) => ({
+    filter: state.filterSort.filter
+})
+
+
+export default connect(mapStateToProps)(PhotoList);

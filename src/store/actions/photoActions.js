@@ -2,23 +2,21 @@ import { toast } from 'react-toastify';
 import getPredictions from '../../classify/getPredictions'
 
 export const uploadPhotos = (photos) => {
-    return (dispatch, getState, { getFirebase, getFirestore }) => {
+    return async (dispatch, getState, { getFirebase, getFirestore }) => {
         const db = getFirestore();
         const storageRef = getFirebase().storage().ref();
         
         const numFiles = photos.length;
-        const urls = [];
         const imgB64array = photos.map(f => f.base64);
         
         // keep a reference for upload and prediction toasts
         const predToast = toast.loading(`Classifying ${numFiles} photo` + (numFiles === 1 ? "" : "s"));
-        const uploadToast = null;
+        var uploadToast = null;
         
-
         // Update prediction - array of image tags
         // with image indexes corresponding to `files` 
-        getPredictions(imgB64array)
-        .then(async (predictions) => {
+        await getPredictions(imgB64array)
+        .then(predictions => {
             toast.update(predToast, { 
                 type: 'success', 
                 render: `Classified ${numFiles} photo` + (numFiles === 1 ? "" : "s"), 
@@ -31,7 +29,6 @@ export const uploadPhotos = (photos) => {
             // Get storage URL, update firestore object with URL
             // This means all files in storage have unique names                         
             const photosCollection = db.collection('photos');
-
             var numUploaded = 0;
 
             photos.forEach((file, idx) => {
@@ -40,36 +37,34 @@ export const uploadPhotos = (photos) => {
                     tags: predictions[idx],
                     createdAt: db.FieldValue.serverTimestamp()
                 }
-                photosCollection.add(photo).then(
-                    async ref => {
+                photosCollection.add(photo).then(async ref => {
+                    if (uploadToast === null)
+                        uploadToast = toast('Uploading files', { progress: 0 });
+                    // Create a reference for the photo, using its 
+                    // firestore  photo ID as its name
+                    const photoRef = storageRef.child(ref.id);
+                    
+                    await photoRef.putString(file.base64, 'data_url', { contentType: file.type })
+                    .then(snap => snap.ref.getDownloadURL())
+                    .then(url => {
+                        // Update toast progress
+                        numUploaded++;
+                        const progress = numUploaded / numFiles;
+                        if (progress === 1) 
+                            toast.update(uploadToast, { 
+                                type: 'success', 
+                                render: 'Uploaded files', 
+                                autoClose: 3000,
+                                progress
+                            })
+                        else toast.update(uploadToast, { progress })
                         
-                        // Create a reference for the photo, using its 
-                        // firestore  photo ID as its name
-                        const photoRef = storageRef.child(ref.id);
-                        
-                        await photoRef.putString(file.base64, 'data_url', {contentType: file.type})
-                        .then(snap => snap.ref.getDownloadURL())
-                        .then(downloadURL => {
-                            // Update toast progress
-                            numUploaded++;
-                            const progress = numUploaded / numFiles;
-                            if (uploadToast.current === null) {
-                                uploadToast.current = toast('Uploading files', { progress, autoClose: false });
-                            } else {
-                                toast.update(uploadToast.current, { progress })
-                            }
-
-                            // Update firestore url for photo 
-                            ref.update({ url: downloadURL });
-                            urls.push(downloadURL);
-                        })
-                    }
-                );
+                        // Update firestore url for photo 
+                        ref.update({ url});
+                    })
+                });
             });
-            toast.update(uploadToast.current, { type: toast.TYPE.SUCCESS, autoClose: 3000 });
-            // TODO create Alert and Dialogue for error vvv
         }).catch(err => {
-            console.log(err);
             const msg = (err.response && err.response.data) || err.message;
             toast.update(predToast, { 
                 type: 'error', 
@@ -83,17 +78,24 @@ export const uploadPhotos = (photos) => {
             payload: photos
         })
     }
-};
+}
+
 
 export const deletePhoto = (id) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const db = getFirestore();
-        const storageRef = getFirebase().storage().ref();
-
-        db.collection('photos').doc(id).delete();
-        storageRef.child(id).delete();
         
-        toast.success(`Deleted photo ${id}.`);
+        getFirestore()
+            .collection('photos')
+            .doc(id)
+            .delete();
+        
+        getFirebase()
+            .storage()
+            .ref()
+            .child(id)
+            .delete();
+        
+        toast.info(`Deleted photo ${id}`);
         dispatch({
             type: "DELETE_PHOTO",
             payload: id
@@ -101,10 +103,13 @@ export const deletePhoto = (id) => {
     }
 }
 
+
 export const deletePhotoTag = (id, tag) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const db = getFirestore();
-        db.collection('photos').doc(id).update({
+        getFirestore()
+        .collection('photos')
+        .doc(id)
+        .update({
             tags: getFirebase().firestore.FieldValue.arrayRemove(tag)
         });
 

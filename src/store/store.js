@@ -14,10 +14,10 @@ firebase.initializeApp(fbConfig)
 firebase.firestore();
 
 
-export const store = createStore(rootReducer, 
+export const store = createStore(rootReducer,
     compose(
         applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore }))
-    )
+    ),
 )
 
 export const rrfProps = {
