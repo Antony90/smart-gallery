@@ -1,14 +1,34 @@
-import { AppBar as MUIAppBar, Paper, Typography, Toolbar, TextField } from "@mui/material";
+import { AppBar as MUIAppBar, Paper, Typography, Toolbar, TextField, styled } from "@mui/material";
 import AppIcon from "@mui/icons-material/AllInclusive";
 import { connect } from "react-redux";
-import { setSearchFilter } from "../store/actions/filterSortActions";
+import { setSearchFilter } from "../store/actions/filterActions";
+
+const SearchInput = styled(TextField)(({ theme }) => ({
+    width: 300,
+    marginLeft: "auto",
+    backgroundColor: 'rgb(255,255,255,0.15)',
+    borderRadius: "6px",
+    "&:hover": {
+        backgroundColor: 'rgb(255,255,255,0.25)',
+    },
+    "& .MuiInputBase-input": {
+        borderRadius: '6px',
+    },
+    "& .MuiOutlinedInput-notchedOutline": {
+        borderRadius: "6px",
+        border: 'none'
+    },
+}));
+
 
 const AppBar = ({ onSearchChange }) => {
 
     return (
         <MUIAppBar
             position="fixed"
-            sx={{ zIndex: 1300, backgroundImage: "linear-gradient(rgba(0, 0, 255, 0.06), rgba(0, 0, 255, 0.06));" }}
+            sx={{ zIndex: 1300 }}
+            color='primary'
+            enableColorOnDark
         >
             <Toolbar sx={{ pl: "5px" }}>
                 <Paper sx={{ display: "flex", px: "15px" }}>
@@ -21,15 +41,8 @@ const AppBar = ({ onSearchChange }) => {
                         Smart Gallery
                     </Typography>
                 </Paper>
-                <TextField // TODO add search icon
-                    sx={{
-                        width: 300,
-                        ml: "auto",
-                        "& .MuiInputBase-input": {
-                            backgroundColor: "rgba(60,60,60,0.35)",
-                            borderRadius: "4px",
-                        },
-                    }}
+                <SearchInput // TODO add search icon
+                    focused
                     margin="none"
                     size="small"
                     placeholder="Search photos, tags, albums..."

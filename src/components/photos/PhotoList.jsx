@@ -1,55 +1,48 @@
-import { useState, createRef, useEffect } from "react";
+import { useState } from "react";
 import { connect } from 'react-redux'
 
 import {
     ImageList,
-    Dialog,
 } from "@mui/material";
 
 import PhotoItem from "./PhotoItem";
-import PhotosSkeleton from "./PhotosSkeleton";
 import PhotoView from "./PhotoView";
-import { Masonry } from '@mui/lab/'
-import { isLoaded } from "react-redux-firebase";
+import { selectPhoto } from "../../store/actions/photoActions";
 
-const PhotoList = ({ photos, filter }) => {
+const PhotoList = ({ photos, isSelectMode, selectPhoto, selectedPhotos }) => {
     // Photos array index for currently selected image
     // -1 => no image selected
-    const [selectedImg, setSelectedImg] = useState(-1);
+    const [ photoIdx, setPhotoIdx ] = useState(-1);
+
+    const onClickPhoto = idx => () => {
+        isSelectMode ? selectPhoto(photos[idx].id)
+         : setPhotoIdx(idx)
+    }
     
-    if(!isLoaded(photos)) return <PhotosSkeleton />;
-
-    const filteredPhotos = filter ?
-        photos.filter(({ name, tags }) => (
-            name.includes(filter) || tags.some(tag => tag.includes(filter))
-        ))
-        : photos;
-
-    const photoListComponent = filteredPhotos.map(({ id, url, name, tags }, idx) => (
+    const photoItemComponent = photos.map(({ id, url, name, tags }, idx) => (
         <PhotoItem
             id={id}
-            onClick={() => setSelectedImg(idx)}
+            key={id}
             src={url}
             imgName={name}
             tags={tags}
-            key={id}
+            onClick={onClickPhoto(idx)}
+            selected={selectedPhotos.includes(id)}
         />
     ));
     
     return (
-        <>
-            <Dialog open={selectedImg > -1} onClose={() => setSelectedImg(-1)}>
-                { selectedImg > -1 && 
-                    <PhotoView 
-                        {...filteredPhotos[selectedImg]} 
-                        // update current image index, navigates to next/previous photo
-                        onClickNext={offset => {
-                            const n = filteredPhotos.length;
-                            setSelectedImg(idx => ((idx + offset % n) + n) % n)
-                        }}
-                    />
-                }
-            </Dialog>
+        <>  
+            {photoIdx > -1 && <PhotoView
+                {...photos[photoIdx]} 
+                open={photoIdx > -1}
+                // Update current image index, navigates to next/previous photo
+                onClickNext={offset => {
+                    const n = photos.length;
+                    setPhotoIdx(idx => ((idx + offset % n) + n) % n)
+                }}
+                onClose={() => setPhotoIdx(-1)}
+            />}
             <ImageList
                 sx={{ m: 0 }}
                 variant="standard"
@@ -57,15 +50,18 @@ const PhotoList = ({ photos, filter }) => {
                 gap={8}
                 rowHeight={300}
             >
-                {photoListComponent}
+                {photoItemComponent}
             </ImageList>
         </>
     );
 };
 
-const mapStateToProps = (state) => ({
-    filter: state.filterSort.filter
+const mapStateToProps = state => ({
+    selectedPhotos: state.photos.selected
 })
 
+const mapDispatchToProps = dispatch => ({
+    selectPhoto: id => dispatch(selectPhoto(id))
+})
 
-export default connect(mapStateToProps)(PhotoList);
+export default connect(mapStateToProps, mapDispatchToProps)(PhotoList);

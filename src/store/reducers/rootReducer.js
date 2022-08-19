@@ -4,7 +4,7 @@ import { firestoreReducer } from 'redux-firestore';
 
 import photoReducer from './photoReducer'
 import albumReducer from './albumReducer';
-import filterSortReducer from './filterSortReducer';
+import filterReducer from './filterReducer';
 
 
 const rootReducer = combineReducers({
@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
     firestore: firestoreReducer,
     photos: photoReducer,
     album: albumReducer,
-    filterSort: filterSortReducer
+    filter: filterReducer
 })
 
 export default rootReducer;

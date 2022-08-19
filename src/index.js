@@ -12,11 +12,11 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Box } from '@mui/material'
+import { Box, CssBaseline } from '@mui/material'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const darkTheme = createTheme({
@@ -25,16 +25,17 @@ const darkTheme = createTheme({
   },
 });
 
-const blueTheme = createTheme({
+const redTheme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
-      main: '#f83030',
+      main: '#000035',
+    },
+    secondary: {
+      main: '#3333ff'
     },
     background: {
-      paper: '#0A1929',
-      light: '#f82038',
-      dark: '#f82038',
+      main: '#20008e'
     }
   }
   
@@ -46,21 +47,23 @@ root.render(
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
           <BrowserRouter>
-            <ThemeProvider theme={blueTheme}>
+            <ThemeProvider theme={redTheme}>
+              <CssBaseline />
               <Box sx={{ display: 'flex' }}>
                 <App />
               </Box>
               <ToastContainer
                 position="bottom-left"
-                autoClose={1000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
+                autoClose={600}
+                hideProgressBar
+                newestOnTop={false}
+                closeOnClick={false}
                 rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme='light'
+                pauseOnFocusLoss={false}
+                draggable={false}
+                pauseOnHover={false}
+                transition={Slide}
+                toastStyle={{ fontSize: '10pt', maxWidth: '230px' }}
               />
             </ThemeProvider>
           </BrowserRouter>

@@ -9,7 +9,8 @@ import {
   Typography,
   Stack,
   Divider,
-  TextField
+  TextField,
+  Dialog
 } from "@mui/material";
 
 import DeleteIcon from '@mui/icons-material/DeleteRounded';
@@ -31,7 +32,7 @@ const photoNav = {
 }
 
 // TODO db stores date, size, dims
-const PhotoView = ({ url, name, tags, onClickNext, id }) => {
+const PhotoView = ({ url, name, tags, onClickNext, id, open, onClose }) => {
   const dispatch = useDispatch();
   const onClickDelete = () => dispatch(deletePhoto(id));
   const onClickDeleteTag = (tag) => dispatch(deletePhotoTag(id, tag));
@@ -39,55 +40,57 @@ const PhotoView = ({ url, name, tags, onClickNext, id }) => {
 
 
   return (
-    <>
-      <Card>
-        <CardMedia
-          component="img"
-          height={500}
-          image={url}
-          />
-        <CardContent sx={{ pb: 0 }}>
-          <Stack direction='row' spacing={2} divider={<Divider orientation="vertical" flexItem />} >
-            <Box sx={{ width: '46%'}}>
-              <Typography variant='h6'>Name</Typography>
-              <Typography variant='subtitle'>{name}</Typography> 
-            </Box>
+    <Dialog open={open} onClose={onClose}>
+      <>
+        <Card>
+          <CardMedia
+            component="img"
+            height={500}
+            image={url}
+            />
+          <CardContent sx={{ pb: 0 }}>
+            <Stack direction='row' spacing={2} divider={<Divider orientation="vertical" flexItem />} >
+              <Box sx={{ width: '46%'}}>
+                <Typography variant='h6'>Name</Typography>
+                <Typography variant='subtitle'>{name}</Typography> 
+              </Box>
 
-            <Stack direction="row" spacing={0} flexWrap='wrap' >
-              { tags.map(tag => 
-                <Chip sx={{ mr: 1, mb: '4px' }} key={tag} label={tag} onDelete={() => onClickDeleteTag(tag)} variant='outlined' color='primary' />) }
+              <Stack direction="row" spacing={0} flexWrap='wrap' >
+                { tags.map(tag => 
+                  <Chip sx={{ mr: 1, mb: '4px' }} key={tag} label={tag} onDelete={() => onClickDeleteTag(tag)} variant='outlined' color='secondary' />) }
+              </Stack>
             </Stack>
-          </Stack>
-        </CardContent>
-        <CardActions sx={{ display: 'block' }}>
-          <Tooltip title='Delete'>
-            <IconButton onClick={onClickDelete}><DeleteIcon /></IconButton>
-          </Tooltip>
-          <Tooltip title='Download Image'>
-            <IconButton onClick={() => saveAs(url, 'out.jpg')}><DownloadIcon /></IconButton>
-          </Tooltip>
-          <TextField 
-            variant='outlined' 
-            size='small' 
-            label='Add tag' 
-            sx={{ float: 'right', mr: '5px', mb: `10px` }}
-            onKeyDown={(e) => {
-              if (e.key == 'Enter' && e.target.value) {
-                onAddTag(e.target.value);
-                e.target.value = ''
-              }
-            }}
-          />
-        </CardActions>
-      </Card>
+          </CardContent>
+          <CardActions sx={{ display: 'block' }}>
+            <Tooltip title='Delete'>
+              <IconButton onClick={onClickDelete}><DeleteIcon /></IconButton>
+            </Tooltip>
+            <Tooltip title='Download Image'>
+              <IconButton onClick={() => saveAs(url, 'out.jpg')}><DownloadIcon /></IconButton>
+            </Tooltip>
+            <TextField 
+              variant='outlined' 
+              size='small' 
+              label='Add tag' 
+              sx={{ float: 'right', mr: '5px', mb: `10px` }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && e.target.value) {
+                  onAddTag(e.target.value);
+                  e.target.value = ''
+                }
+              }}
+            />
+          </CardActions>
+        </Card>
 
-      <Tooltip title='Previous Photo' sx={{ ...photoNav, left: '30%' }}>
-        <IconButton disableRipple onClick={() => onClickNext(-1)}><LeftIcon /></IconButton>
-      </Tooltip>
-      <Tooltip title='Next Photo' sx={{ ...photoNav, right: '30%'}} >
-        <IconButton disableRipple onClick={() => onClickNext(1)}><RightIcon /></IconButton>
-      </Tooltip>
-    </>
+        <Tooltip title='Previous Photo' sx={{ ...photoNav, left: '30%' }}>
+          <IconButton disableRipple onClick={() => onClickNext(-1)}><LeftIcon /></IconButton>
+        </Tooltip>
+        <Tooltip title='Next Photo' sx={{ ...photoNav, right: '30%'}} >
+          <IconButton disableRipple onClick={() => onClickNext(1)}><RightIcon /></IconButton>
+        </Tooltip>
+      </>
+    </Dialog>
   )
 }
 

@@ -20,10 +20,14 @@ import {
     Toolbar,
     Paper
 } from '@mui/material/';
+import { useEffect } from 'react';
+import { fetchPhotos } from './store/actions/photoActions';
+import 'firebase/compat/firestore';
+import { connect } from 'react-redux';
 
-function App() {
+function App({ fetchPhotos }) {
     const navItems = [
-        { text: 'Home', path: '/', icon: <HomeRoundedIcon/> },
+        { text: 'Dashboard', path: '/', icon: <HomeRoundedIcon/> },
         { text: 'Photos', path: '/photos', icon: <PhotoIcon/> },
         { text: 'Albums', path: '/albums', icon: <PhotoLibraryIcon/> }
     ]
@@ -33,17 +37,19 @@ function App() {
         { text: 'Nature', path: '/albums/nothing' },
         { text: 'Fruit', path: '/albums/void' }
     ]
+    
+    useEffect(fetchPhotos, []);
 
     return (
-        <>
-            <Navigation drawerWidth={250} navItems={navItems} nestedItems={nestedItems} />
+        <>  
+            <Navigation drawerWidth={240} navItems={navItems} nestedItems={nestedItems} />
             <Box sx={{ width: '100%' }}>
                 <Toolbar />
-                <Box sx={{ border: '1px solid rgba(255,0,0,0.3)', borderRadius: '10px', m: '10px',p: '10px' }}>
+                <Box sx={{ border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', m: '10px',p: '10px' }}>
                     <Routes>
                         <Route path='/photos' element={<PhotosPage />} />
                         <Route path='/albums/:id' element={<AlbumPhotosPage />} />
-                        <Route path='/albums' element={<AlbumsPage />} />
+                        <Route path='/albums' element={<AlbumsPage albums={['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven']}/>} />
                         <Route path='/' element={<Dashboard />} />
                     </Routes>
                 </Box>
@@ -52,4 +58,8 @@ function App() {
     );
 };
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+    fetchPhotos: () => dispatch(fetchPhotos())
+})
+
+export default connect(null, mapDispatchToProps)(App);

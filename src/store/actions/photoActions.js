@@ -1,5 +1,18 @@
 import { toast } from 'react-toastify';
-import getPredictions from '../../classify/getPredictions'
+import getPredictions from '../../classify/getPredictions';
+
+export const fetchPhotos = () => {
+    return (dispatch, getState, { getFirestore }) => {
+        getFirestore()
+        .collection('photos')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(snap => {
+            const photos = snap.docs
+                .map(doc => ({ ...doc.data(), id: doc.id }));
+            dispatch({ type: 'UPDATE_PHOTOS', payload: photos });
+        })
+    }
+}
 
 export const uploadPhotos = (photos) => {
     return async (dispatch, getState, { getFirebase, getFirestore }) => {
@@ -83,19 +96,18 @@ export const uploadPhotos = (photos) => {
 
 export const deletePhoto = (id) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        
+        // Delete from photo from storage and firestore
         getFirestore()
             .collection('photos')
             .doc(id)
             .delete();
-        
         getFirebase()
             .storage()
             .ref()
             .child(id)
             .delete();
         
-        toast.info(`Deleted photo ${id}`);
+        toast.success(`Deleted photo ${id}`);
         dispatch({
             type: "DELETE_PHOTO",
             payload: id
@@ -133,3 +145,13 @@ export const addPhotoTag = (id, tag) => {
         });
     }
 }
+
+export const selectPhoto = (id) => ({
+    type: "SELECT_PHOTO",
+    payload: id
+})
+
+
+export const clearPhotoSelection = ({
+    type: "CLEAR_SELECTED_PHOTOS"
+})

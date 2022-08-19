@@ -10,6 +10,7 @@ import {
     ListItemText,
     ListItemIcon,
     ListItemSecondaryAction,
+    styled,
 } from '@mui/material';
 
 import ExpandLess from '@mui/icons-material/ExpandLessRounded';
@@ -18,7 +19,12 @@ import ExpandMore from '@mui/icons-material/ExpandMoreRounded';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from './AppBar';
+import { Box } from '@mui/system';
 
+const listItemButton = {
+    borderRadius: '10px',
+    marginX: '12px'
+}
 
 const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
     // Whether nested nav list items are expanded
@@ -27,7 +33,6 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
 
     return (
         <>
-            <CssBaseline />
             <AppBar />
             <Drawer
                 sx={{
@@ -36,7 +41,6 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
                     "& .MuiDrawer-paper": {
                         width: drawerWidth,
                         boxSizing: "border-box",
-                        borderRight: '1px solid red'//TODO use theme primary
                     },
                     
                 }}
@@ -48,7 +52,8 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
                 <List>
                     {navItems.map(({ path, text, icon }) => (
                         <>
-                            <ListItemButton 
+                            <ListItemButton
+                                sx={listItemButton}
                                 key={path} 
                                 onClick={ () => navigate(path) }
                             >
@@ -59,11 +64,14 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
                                     control visibility of nested list items (for specific albums) */ }
                                 { text === 'Albums' && 
                                     <ListItemSecondaryAction>
-                                        <IconButton onClick={(e) => {
-                                            // lets you click on the expand button without it going to /albums
-                                            e.stopPropagation(); 
-                                            setOpen(curr => !curr);
-                                        }} >
+                                        <IconButton 
+                                            disableRipple
+                                            onClick={(e) => {
+                                                // lets you click on the expand button without it going to /albums
+                                                e.stopPropagation(); 
+                                                setOpen(curr => !curr);
+                                            }} 
+                                        >
                                             { open ? <ExpandLess /> : <ExpandMore /> }
                                         </IconButton>
                                     </ListItemSecondaryAction> 
@@ -73,10 +81,10 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
                         </>
                     ))}
                     <Collapse in={open} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
+                        <List disablePadding>
                             {nestedItems.map(({ text, path }) => (
-                                <ListItemButton key={path} sx={{ paddingLeft: 4 }} onClick={() => navigate(path)}>
-                                    <ListItemText primary={text} />
+                                <ListItemButton key={path} sx={listItemButton} onClick={() => navigate(path)}>
+                                    <ListItemText primary={text} inset/>
                                 </ListItemButton>
                             ))}
                         </List>

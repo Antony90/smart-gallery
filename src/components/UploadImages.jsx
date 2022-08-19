@@ -7,12 +7,12 @@ import "firebase/compat/storage";
 import { Fab } from '@mui/material';
 import UploadIcon from '@mui/icons-material/CloudUpload';
 
-const UploadImages = ({ style }) => {
+const UploadImages = () => {
     const dispatch = useDispatch();
     const onSelectPhotos = photos => dispatch(uploadPhotos(photos));
 
     return (
-        <Fab variant="extended" size="large" color="primary" component='label' sx={style}>
+        <Fab variant="extended" size="large" color="primary" component='label' sx={{ width: 'fit-content' }}>
             <div style={{ display: 'none' }}>
                 <FileBase64 multiple={true} onDone={onSelectPhotos} />
             </div>

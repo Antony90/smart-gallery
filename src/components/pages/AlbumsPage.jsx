@@ -1,9 +1,25 @@
-import React from 'react'
+import { Grid, ImageList, Typography } from '@mui/material'
+import { connect } from 'react-redux'
+import AlbumTile from '../albums/AlbumTile'
 
-const AlbumsPage = () => {
+const AlbumsPage = ({ albums }) => {
   return (
-    <div>AlbumsPage</div>
+    <ImageList
+      sx={{ m: 0 }}
+      variant="standard"
+      cols={3}
+      gap={10}
+      // direction="row"
+      // justifyContent="center"
+      // alignItems="center"
+    >
+      { albums.map(album => (
+        <AlbumTile album={album}/>
+      ))}
+    </ImageList>
   )
 }
-
-export default AlbumsPage
+const mapStateToProps = state => ({
+  albums: state.albums
+})
+export default connect(mapStateToProps)(AlbumsPage);
