@@ -1,11 +1,18 @@
 import { Button, ImageListItem, ImageListItemBar, Paper } from "@mui/material";
 import React from "react";
+import { useNavigate } from 'react-router-dom'; 
 
-const AlbumTile = ({ album }) => {
+const AlbumTile = ({ id, name }) => {
+    const navigate = useNavigate();
+    
     return (
-        <ImageListItem component={Button} sx={{ overflow: 'hidden', m: '50px' }}>
+        <ImageListItem 
+            component={Button} 
+            sx={{ overflow: 'hidden', m: '50px' }}
+            onClick={() => navigate(`/albums/${id}`)}
+        >
             <img src="https://via.placeholder.com/300" />
-            <ImageListItemBar title={album} />
+            <ImageListItemBar title={name} />
         </ImageListItem>
     );
 };

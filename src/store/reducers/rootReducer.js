@@ -11,7 +11,7 @@ const rootReducer = combineReducers({
     firebase: firebaseReducer,
     firestore: firestoreReducer,
     photos: photoReducer,
-    album: albumReducer,
+    albums: albumReducer,
     filter: filterReducer
 })
 

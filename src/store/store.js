@@ -13,9 +13,9 @@ import rootReducer from './reducers/rootReducer';
 firebase.initializeApp(fbConfig)
 firebase.firestore();
 
-
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 export const store = createStore(rootReducer,
-    compose(
+    composeEnhancers(
         applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore }))
     ),
 )

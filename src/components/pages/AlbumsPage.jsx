@@ -9,12 +9,9 @@ const AlbumsPage = ({ albums }) => {
       variant="standard"
       cols={3}
       gap={10}
-      // direction="row"
-      // justifyContent="center"
-      // alignItems="center"
     >
       { albums.map(album => (
-        <AlbumTile album={album}/>
+        <AlbumTile {...album}/>
       ))}
     </ImageList>
   )

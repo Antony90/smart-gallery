@@ -24,25 +24,23 @@ import { useEffect } from 'react';
 import { fetchPhotos } from './store/actions/photoActions';
 import 'firebase/compat/firestore';
 import { connect } from 'react-redux';
+import { fetchAlbums } from './store/actions/albumActions';
 
-function App({ fetchPhotos }) {
+function App({ fetchPhotos, fetchAlbums }) {
     const navItems = [
         { text: 'Dashboard', path: '/', icon: <HomeRoundedIcon/> },
         { text: 'Photos', path: '/photos', icon: <PhotoIcon/> },
         { text: 'Albums', path: '/albums', icon: <PhotoLibraryIcon/> }
     ]
-
-    // TODO use firestore query to get album ids
-    const nestedItems = [
-        { text: 'Nature', path: '/albums/nothing' },
-        { text: 'Fruit', path: '/albums/void' }
-    ]
     
-    useEffect(fetchPhotos, []);
+    useEffect(() => {
+        fetchPhotos();
+        fetchAlbums();
+    }, []);
 
     return (
         <>  
-            <Navigation drawerWidth={240} navItems={navItems} nestedItems={nestedItems} />
+            <Navigation drawerWidth={240} navItems={navItems} />
             <Box sx={{ width: '100%' }}>
                 <Toolbar />
                 <Box sx={{ border: '1px solid rgba(255,255,255,0.3)', borderRadius: '10px', m: '10px',p: '10px' }}>
@@ -59,7 +57,8 @@ function App({ fetchPhotos }) {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchPhotos: () => dispatch(fetchPhotos())
+    fetchPhotos: () => dispatch(fetchPhotos()),
+    fetchAlbums: () => dispatch(fetchAlbums())
 })
 
 export default connect(null, mapDispatchToProps)(App);

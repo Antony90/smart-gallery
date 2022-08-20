@@ -18,7 +18,6 @@ const PhotoList = ({ photos, isSelectMode, selectPhoto, selectedPhotos }) => {
         isSelectMode ? selectPhoto(photos[idx].id)
          : setPhotoIdx(idx)
     }
-    
     const photoItemComponent = photos.map(({ id, url, name, tags }, idx) => (
         <PhotoItem
             id={id}

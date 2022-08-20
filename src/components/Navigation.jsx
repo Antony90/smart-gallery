@@ -20,13 +20,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from './AppBar';
 import { Box } from '@mui/system';
+import { connect } from 'react-redux';
 
 const listItemButton = {
     borderRadius: '10px',
     marginX: '12px'
 }
 
-const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
+const Navigation = ({ drawerWidth, navItems, albums }) => {
     // Whether nested nav list items are expanded
     const [ open, setOpen ] = useState(true);
     let navigate = useNavigate();
@@ -82,9 +83,9 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
                     ))}
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <List disablePadding>
-                            {nestedItems.map(({ text, path }) => (
-                                <ListItemButton key={path} sx={listItemButton} onClick={() => navigate(path)}>
-                                    <ListItemText primary={text} inset/>
+                            {albums.map(({ name, id }) => (
+                                <ListItemButton key={id} sx={listItemButton} onClick={() => navigate(`/albums/${id}`)}>
+                                    <ListItemText primary={name} inset/>
                                 </ListItemButton>
                             ))}
                         </List>
@@ -95,4 +96,4 @@ const Navigation = ({ drawerWidth, navItems, nestedItems }) => {
     );
 };
 
-export default Navigation;
+export default connect(state => ({ albums: state.albums }))(Navigation);
