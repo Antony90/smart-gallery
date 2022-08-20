@@ -1,17 +1,19 @@
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom'
 import PhotoList from '../photos/PhotoList'
 
-const AlbumPhotosPage = () => {
+const AlbumPhotosPage = ({ albumPhotos }) => {
   // Get album id from query string parameters
   const { id } = useParams();
-  const album = useSelector(state => state.albums.find(album => album.id === id));
 
   return (
-    // When album is null, photos === []
-    <PhotoList photos={(album && album.photos) || []} isSelectMode={false} />
+    <PhotoList photos={albumPhotos(id)} isSelectMode={false} />
   )
 }
 
-export default AlbumPhotosPage;
+const mapStateToProps = state => ({ 
+  albumPhotos: id => state.photos.all.filter(ph => ph.albums.includes(id)) 
+})
+
+export default connect(mapStateToProps)(AlbumPhotosPage);
