@@ -1,5 +1,6 @@
-export const fetchAlbums = () => {
+export const fetchAlbums = (setUnsubscribe) => {
     return (dispatch, getState, { getFirestore }) => {
+        const unsub = 
         getFirestore()
         .collection('albums')
         .orderBy('name', 'asc')
@@ -7,16 +8,18 @@ export const fetchAlbums = () => {
             const albums = snap.docs.map(doc => ({
                 id: doc.id, 
                 name: doc.data().name,
+                photoIds: doc.data().photoIds
             }))
             dispatch({ type: 'UPDATE_ALBUMS', payload: albums })
         })
+        setUnsubscribe(unsub)
     }
 }
 
 export const createAlbum = (albumName) => {
     return (dispatch, getState, { getFirestore }) => {
         const db = getFirestore();
-        const photoIds = getState().photos.selected;
+        const photoIds = getState().photos.selected.map(ph => ph.id)
 
         db.collection('albums')
         .add({
@@ -33,16 +36,6 @@ export const createAlbum = (albumName) => {
                     albums: db.FieldValue.arrayUnion(albumId)
                 })
             })
-
-            dispatch({
-                type: "CREATE_ALBUM",
-                payload: {
-                    name: albumName,
-                    photoIds: photoIds 
-                }
-            })
-
         })
-
     }
 }

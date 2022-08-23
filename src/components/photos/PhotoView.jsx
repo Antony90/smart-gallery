@@ -32,7 +32,8 @@ const photoNav = {
 }
 
 // TODO db stores date, size, dims
-const PhotoView = ({ url, name, tags, onClickNext, id, open, onClose }) => {
+const PhotoView = ({ url, name, tags, id, open, onClickNext, onClose }) => {
+
   const dispatch = useDispatch();
   const onClickDelete = () => dispatch(deletePhoto(id));
   const onClickDeleteTag = (tag) => dispatch(deletePhotoTag(id, tag));

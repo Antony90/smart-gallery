@@ -1,16 +1,17 @@
 import { toast } from 'react-toastify';
 import getPredictions from '../../classify/getPredictions';
 
-export const fetchPhotos = () => {
+export const fetchPhotos = (setUnsubscribe) => {
     return (dispatch, getState, { getFirestore }) => {
+        const unsub = 
         getFirestore()
         .collection('photos')
         .orderBy('createdAt', 'desc')
         .onSnapshot(snap => {
-            const photos = snap.docs
-                .map(doc => ({ ...doc.data(), id: doc.id }));
+            const photos = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
             dispatch({ type: 'UPDATE_PHOTOS', payload: photos });
         })
+        setUnsubscribe(unsub)
     }
 }
 
@@ -48,7 +49,8 @@ export const uploadPhotos = (photos) => {
                 const photo = {
                     name: file.name,
                     tags: predictions[idx],
-                    createdAt: db.FieldValue.serverTimestamp()
+                    createdAt: db.FieldValue.serverTimestamp(),
+                    albums: []
                 }
                 photosCollection.add(photo).then(async ref => {
                     if (uploadToast === null)
@@ -96,22 +98,33 @@ export const uploadPhotos = (photos) => {
 
 export const deletePhoto = (id) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        // Delete from photo from storage and firestore
+        // Delete from photo from firestore and storage
         getFirestore()
             .collection('photos')
             .doc(id)
             .delete();
+        
         getFirebase()
             .storage()
             .ref()
             .child(id)
             .delete();
-        
+
         toast.success(`Deleted photo ${id}`);
         dispatch({
             type: "DELETE_PHOTO",
             payload: id
         })
+    }
+}
+
+export const deleteSelectedPhotos = () => {
+    return (dispatch, getState) => {
+        const selectedPhotos = getState().photos.selected;
+        if (selectedPhotos.length) {
+            selectedPhotos.forEach(({ id }) => dispatch(deletePhoto(id)));
+            dispatch(clearPhotoSelection)
+        }
     }
 }
 
@@ -146,9 +159,9 @@ export const addPhotoTag = (id, tag) => {
     }
 }
 
-export const selectPhoto = (id) => ({
+export const selectPhoto = (photo) => ({
     type: "SELECT_PHOTO",
-    payload: id
+    payload: photo
 })
 
 

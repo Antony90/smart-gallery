@@ -6,14 +6,14 @@ import PhotoList from '../photos/PhotoList'
 const AlbumPhotosPage = ({ albumPhotos }) => {
   // Get album id from query string parameters
   const { id } = useParams();
-
-  return (
-    <PhotoList photos={albumPhotos(id)} isSelectMode={false} />
-  )
+  return <PhotoList photos={albumPhotos(id)} isSelectMode={false} />
+  
 }
 
-const mapStateToProps = state => ({ 
-  albumPhotos: id => state.photos.all.filter(ph => ph.albums.includes(id)) 
+const mapStateToProps = state => ({
+  albumPhotos: albumId => {
+    return state.photos.all.filter(({ albums }) => albums.includes(albumId));
+  }
 })
 
 export default connect(mapStateToProps)(AlbumPhotosPage);

@@ -7,7 +7,7 @@ import {
 import { Box } from "@mui/system";
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 
-const PhotoItem = ({ id, onClick, src, imgName, tags, selected }) => {
+const PhotoTile = ({ id, onClick, src, imgName, tags, selected }) => {
     return <ImageListItem
         component={Button}
         key={id}
@@ -42,4 +42,4 @@ const PhotoItem = ({ id, onClick, src, imgName, tags, selected }) => {
 };
 
 
-export default PhotoItem;
+export default PhotoTile;

@@ -28,7 +28,6 @@ const AppBar = ({ onSearchChange }) => {
             position="fixed"
             sx={{ zIndex: 1300 }}
             color='primary'
-            enableColorOnDark
         >
             <Toolbar sx={{ pl: "5px" }}>
                 <Paper sx={{ display: "flex", px: "15px" }}>

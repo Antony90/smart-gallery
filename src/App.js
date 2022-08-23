@@ -33,10 +33,12 @@ function App({ fetchPhotos, fetchAlbums }) {
         { text: 'Albums', path: '/albums', icon: <PhotoLibraryIcon/> }
     ]
     
+    // Subscribe to database updates
+    // Reflected in local redux state
     useEffect(() => {
-        fetchPhotos();
-        fetchAlbums();
-    }, []);
+        fetchPhotos((x) => x)
+        fetchAlbums((x) => x)
+    }, [])
 
     return (
         <>  
@@ -47,7 +49,7 @@ function App({ fetchPhotos, fetchAlbums }) {
                     <Routes>
                         <Route path='/photos' element={<PhotosPage />} />
                         <Route path='/albums/:id' element={<AlbumPhotosPage />} />
-                        <Route path='/albums' element={<AlbumsPage albums={['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven']}/>} />
+                        <Route path='/albums' element={<AlbumsPage />} />
                         <Route path='/' element={<Dashboard />} />
                     </Routes>
                 </Box>
@@ -57,8 +59,8 @@ function App({ fetchPhotos, fetchAlbums }) {
 };
 
 const mapDispatchToProps = dispatch => ({
-    fetchPhotos: () => dispatch(fetchPhotos()),
-    fetchAlbums: () => dispatch(fetchAlbums())
+    fetchPhotos: (setUnsub) => dispatch(fetchPhotos(setUnsub)),
+    fetchAlbums: (setUnsub) => dispatch(fetchAlbums(setUnsub)),
 })
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(undefined, mapDispatchToProps)(App);

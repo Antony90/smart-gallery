@@ -47,7 +47,7 @@ root.render(
     <Provider store={store}>
       <ReactReduxFirebaseProvider {...rrfProps}>
           <BrowserRouter>
-            <ThemeProvider theme={redTheme}>
+            <ThemeProvider theme={darkTheme}>
               <CssBaseline />
               <Box sx={{ display: 'flex' }}>
                 <App />
