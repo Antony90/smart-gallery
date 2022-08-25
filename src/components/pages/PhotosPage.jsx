@@ -1,53 +1,70 @@
-import { compose } from "redux";
 import { connect } from "react-redux";
-import { firestoreConnect } from "react-redux-firebase";
 import "firebase/compat/firestore";
+import "firebase/compat/storage";
 
 import PhotosList from "../photos/PhotoList";
-import UploadImages from "../UploadImages";
 
-import {
-    Box,
-
-    Fab,
-    Stack,
-
-} from "@mui/material";
+import { Box } from "@mui/material";
 import { useState } from "react";
-import { TransitionGroup } from "react-transition-group";
 import { createAlbum } from "../../store/actions/albumActions";
 import {
     clearPhotoSelection,
     deleteSelectedPhotos,
+    uploadPhotos,
 } from "../../store/actions/photoActions";
 import { DeleteRounded, SelectAllRounded } from "@mui/icons-material";
-import AlbumDialog from "./AlbumDialog";
+import UploadIcon from '@mui/icons-material/CloudUpload';
 
-const actionButtton = {
-    position: "fixed",
-    bottom: 16,
-    right: 16,
-};
-
-const ActionButtonStack = (props) => (
-    <Stack direction="column" spacing={3} sx={actionButtton} alignItems="end">
-        {props.children}
-    </Stack>
-);
-const ActionButton = ({ onClick, label, icon }) => (
-    <Fab variant="extended" size="large" color="primary" onClick={onClick}>
-        <div style={{ marginRight: "10px", display: "inline-flex" }}>
-            {icon}
-        </div>
-        {label}
-    </Fab>
-);
+import AlbumDialog from "../albums/AlbumDialog";
+import ActionButton from "../misc/ActionButton";
+import ActionButtonStack from "../misc/ActionButtonStack";
+import FileBase64 from "react-file-base64";
 
 
 
-const PhotosPage = ({ photos, createAlbum, deleteSelectedPhotos }) => {
+const PhotosPage = ({ photos, createAlbum, deleteSelectedPhotos, uploadPhotos }) => {
     const [isSelectMode, setSelectMode] = useState(false);
     const [openAlbumDialog, setOpenAlbumDialog] = useState(false);
+
+    const NewAlbumButton = () => (
+        <ActionButton
+            label="New album"
+            icon={<DeleteRounded />}
+            onClick={() => {
+                setOpenAlbumDialog(true);
+                setSelectMode(false);
+            }}
+        />)
+    
+    const DeletePhotosButton = () => (
+        <ActionButton
+            label="Delete"
+            icon={<DeleteRounded />}
+            onClick={() => {
+                deleteSelectedPhotos();
+                setSelectMode(false);
+            }}
+        />)
+    
+    const SelectPhotosButton = () => (
+        <ActionButton
+            label={ isSelectMode ? "Cancel" : "Select"}
+            icon={<SelectAllRounded />}
+            onClick={() => setSelectMode(m => !m)}
+        />)
+    
+    const UploadPhotosButton = () => (
+        <ActionButton 
+            label="Upload" 
+            icon={<UploadIcon />} 
+            component='label' 
+            sx={{ width: 'fit-content' }}
+        >
+            <div style={{ display: 'none' }}>
+                <FileBase64 multiple={true} onDone={uploadPhotos} />
+            </div>
+        </ActionButton>)
+
 
     return (<>
         <AlbumDialog
@@ -58,38 +75,20 @@ const PhotosPage = ({ photos, createAlbum, deleteSelectedPhotos }) => {
         <Box sx={{ position: "relative" }}>
             <PhotosList photos={photos} isSelectMode={isSelectMode} />
             <ActionButtonStack>
-                {isSelectMode ? (
+                {isSelectMode && (
                     <>
-                        <ActionButton
-                            label="New album"
-                            icon={<DeleteRounded />}
-                            onClick={() => {
-                                setOpenAlbumDialog(true);
-                                setSelectMode(false);
-                            }}
-                        />
-
-                        <ActionButton
-                            label="Delete"
-                            icon={<DeleteRounded />}
-                            onClick={() => {
-                                deleteSelectedPhotos();
-                                setSelectMode(false);
-                            }}
-                        />
+                        <NewAlbumButton/>
+                        <DeletePhotosButton/>
                     </>
-                ) : (
-                    <ActionButton
-                        label="Select"
-                        icon={<SelectAllRounded />}
-                        onClick={() => setSelectMode(true)}
-                    />
                 )}
-                <UploadImages />
+                <SelectPhotosButton/>
+                <UploadPhotosButton/>
             </ActionButtonStack>
         </Box>
         </>);
 };
+
+
 
 const mapStateToProps = (state) => {
     return {
@@ -103,6 +102,7 @@ const mapDispatchToProps = (dispatch) => ({
         dispatch(clearPhotoSelection);
     },
     deleteSelectedPhotos: () => dispatch(deleteSelectedPhotos()),
+    uploadPhotos: photos => dispatch(uploadPhotos(photos))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PhotosPage);

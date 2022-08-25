@@ -1,7 +1,8 @@
-import { AppBar as MUIAppBar, Paper, Typography, Toolbar, TextField, styled } from "@mui/material";
+import { AppBar as MUIAppBar, Paper, Typography, Toolbar, TextField, styled, InputAdornment } from "@mui/material";
 import AppIcon from "@mui/icons-material/AllInclusive";
 import { connect } from "react-redux";
-import { setSearchFilter } from "../store/actions/filterActions";
+import { setSearchFilter } from "../../store/actions/filterActions";
+import SearchIcon from '@mui/icons-material/Search';
 
 const SearchInput = styled(TextField)(({ theme }) => ({
     width: 300,
@@ -40,12 +41,20 @@ const AppBar = ({ onSearchChange }) => {
                         Smart Gallery
                     </Typography>
                 </Paper>
+                
                 <SearchInput // TODO add search icon
                     focused
                     margin="none"
                     size="small"
                     placeholder="Search photos, tags, albums..."
                     onChange={e => onSearchChange(e.target.value)}
+                    InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                      }}
                 />
             </Toolbar>
         </MUIAppBar>

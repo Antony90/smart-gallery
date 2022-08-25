@@ -19,6 +19,7 @@ const AlbumDialog = ({createAlbum, open, onClose}) => {
                     label="Album Name"
                     autoFocus
                     onChange={(e) => setName(e.target.value)}
+                    sx={{ mt: '10px' }}
                 />
             </DialogContent>
             <DialogActions>

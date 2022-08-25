@@ -96,4 +96,4 @@ const Navigation = ({ drawerWidth, navItems, albums }) => {
     );
 };
 
-export default connect(state => ({ albums: state.albums }))(Navigation);
+export default connect(state => ({ albums: state.albums.all }))(Navigation);

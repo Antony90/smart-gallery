@@ -1,12 +1,31 @@
-import React from 'react'
+import { DeleteForeverRounded } from '@mui/icons-material';
 import { connect } from 'react-redux';
 import { useParams } from 'react-router-dom'
+import { deleteAlbum } from '../../store/actions/albumActions';
+import ActionButton from '../misc/ActionButton';
+import ActionButtonStack from '../misc/ActionButtonStack';
 import PhotoList from '../photos/PhotoList'
 
-const AlbumPhotosPage = ({ albumPhotos }) => {
+const AlbumPhotosPage = ({ albumPhotos, deleteAlbum }) => {
   // Get album id from query string parameters
   const { id } = useParams();
-  return <PhotoList photos={albumPhotos(id)} isSelectMode={false} />
+
+  const DeleteAlbumButton = () => (
+    <ActionButton
+      label='Delete album'
+      icon={<DeleteForeverRounded />}
+      onClick={() => deleteAlbum(id)}  
+    />
+  )
+  
+  return (
+    <>
+      <PhotoList photos={albumPhotos(id)} isSelectMode={false} />
+      <ActionButtonStack>
+        <DeleteAlbumButton/>
+      </ActionButtonStack>
+    </>
+  )
   
 }
 
@@ -16,4 +35,8 @@ const mapStateToProps = state => ({
   }
 })
 
-export default connect(mapStateToProps)(AlbumPhotosPage);
+const mapDispatchToProps = dispatch => ({
+  deleteAlbum: id => dispatch(deleteAlbum(id))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AlbumPhotosPage);

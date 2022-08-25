@@ -18,7 +18,7 @@ const AlbumsPage = ({ albums, getAlbumPreviewPhoto }) => {
   )
 }
 const mapStateToProps = state => ({
-  albums: state.albums,
+  albums: state.albums.all,
   getAlbumPreviewPhoto: albumId => {
     const albumPhotos = state.photos.all.filter(({ albums }) => albums.includes(albumId));
     const photo = albumPhotos[Math.floor((Math.random()*albumPhotos.length))]
