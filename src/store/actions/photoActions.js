@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import getPredictions from '../../classify/getPredictions';
 
-export const fetchPhotos = (setUnsubscribe) => {
+export const fetchPhotos = () => {
     return (dispatch, getState, { getFirestore }) => {
         const unsub = 
         getFirestore()
@@ -11,7 +11,7 @@ export const fetchPhotos = (setUnsubscribe) => {
             const photos = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
             dispatch({ type: 'UPDATE_PHOTOS', payload: photos });
         })
-        setUnsubscribe(unsub)
+        dispatch({ type: 'SET_PHOTO_UNSUB', payload: unsub })
     }
 }
 

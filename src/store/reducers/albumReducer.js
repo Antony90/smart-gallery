@@ -1,10 +1,16 @@
-const initialState = [];
+const initialState = {
+    all: [],
+    unsub: null
+};
 
 const albumReducer = (state = initialState, action) => {
     switch (action.type) {
+        case "SET_ALBUM_UNSUB":
+            console.log("Set album unsub");
+            return { ...state, unsub: action.payload }
         case "UPDATE_ALBUMS":
             console.log(`Updated ${action.payload.length} albums`);
-            return action.payload;
+            return { ...state, all: action.payload };
         case "CREATE_ALBUM":
             console.log(`Created album ${JSON.stringify(action.payload)}`);
             return state;

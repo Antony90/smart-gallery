@@ -9,7 +9,7 @@ import PhotosPage from "./components/pages/PhotosPage";
 import AlbumsPage from './components/pages/AlbumsPage';
 import AlbumPhotosPage from "./components/pages/AlbumPhotosPage";
 import Dashboard from './components/pages/Dashboard';
-import Navigation from './components/Navigation';
+import Navigation from './components/misc/Navigation';
 
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibraryRounded';
@@ -21,12 +21,19 @@ import {
     Paper
 } from '@mui/material/';
 import { useEffect } from 'react';
+
 import { fetchPhotos } from './store/actions/photoActions';
 import 'firebase/compat/firestore';
 import { connect } from 'react-redux';
 import { fetchAlbums } from './store/actions/albumActions';
 
-function App({ fetchPhotos, fetchAlbums }) {
+// TODO
+// remove redux-react-firebase package
+// add albRef, photoRef, storageRef, toast instead to thunk with extra args
+// Dashboard page
+// Use unsub in cleanup 
+function App({ fetchPhotos, fetchAlbums, unsubscribe }) {
+
     const navItems = [
         { text: 'Dashboard', path: '/', icon: <HomeRoundedIcon/> },
         { text: 'Photos', path: '/photos', icon: <PhotoIcon/> },
@@ -36,8 +43,10 @@ function App({ fetchPhotos, fetchAlbums }) {
     // Subscribe to database updates
     // Reflected in local redux state
     useEffect(() => {
-        fetchPhotos((x) => x)
-        fetchAlbums((x) => x)
+        fetchPhotos()
+        fetchAlbums()
+
+        return unsubscribe;
     }, [])
 
     return (
@@ -63,4 +72,13 @@ const mapDispatchToProps = dispatch => ({
     fetchAlbums: (setUnsub) => dispatch(fetchAlbums(setUnsub)),
 })
 
-export default connect(undefined, mapDispatchToProps)(App);
+const mapStateToProps = state => ({
+    unsubscribe: () => {
+        const unsubPhotos = state.photos.unsub;
+        const unsubAlbums = state.albums.unsub;
+        unsubPhotos();
+        unsubAlbums();
+    }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

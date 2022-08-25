@@ -1,10 +1,14 @@
 const initialState = {
     all: [],
-    selected: []
+    selected: [],
+    unsub: null
 };
 
 const photoReducer = (state = initialState, action) => {
     switch (action.type) {
+        case "SET_PHOTO_UNSUB":
+            console.log("Set photo unsub");
+            return { ...state, unsub: action.payload }
         case "UPDATE_PHOTOS":
             console.log(`Updated ${action.payload.length} photos`);
             return {...state,  all: action.payload };

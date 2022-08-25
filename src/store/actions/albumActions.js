@@ -1,4 +1,6 @@
-export const fetchAlbums = (setUnsubscribe) => {
+import { toast } from 'react-toastify'; 
+
+export const fetchAlbums = () => {
     return (dispatch, getState, { getFirestore }) => {
         const unsub = 
         getFirestore()
@@ -12,7 +14,7 @@ export const fetchAlbums = (setUnsubscribe) => {
             }))
             dispatch({ type: 'UPDATE_ALBUMS', payload: albums })
         })
-        setUnsubscribe(unsub)
+        dispatch({ type: 'SET_ALBUM_UNSUB', payload: unsub })
     }
 }
 
@@ -37,5 +39,15 @@ export const createAlbum = (albumName) => {
                 })
             })
         })
+    }
+}
+
+export const deleteAlbum = id => {
+    return (dispatch, getState, { getFirestore }) => {
+        getFirestore()
+        .collection('albums')
+        .doc(id)
+        .delete()
+        .then(() => toast.success(`Deleted album ${id}`))
     }
 }
