@@ -14,11 +14,14 @@ import Navigation from './components/misc/Navigation';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibraryRounded';
 import PhotoIcon from '@mui/icons-material/PhotoRounded';
+import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 
 import {
     Box,
     Toolbar,
-    Paper
+    Paper,
+    Typography,
+    Link
 } from '@mui/material/';
 import { useEffect } from 'react';
 
@@ -62,6 +65,11 @@ function App({ fetchPhotos, fetchAlbums, unsubscribe }) {
                         <Route path='/' element={<Dashboard />} />
                     </Routes>
                 </Box>
+                <Typography variant="body2" color="text.secondary" align="center" padding={2}>
+                    <Link color="inherit" href="https://github.com/Antony90/smart-gallery/" target='_blank'>
+                    Smart Gallery
+                    </Link> <OpenInNewRoundedIcon sx={{ position: 'relative', top: '2px', fontSize: 'small'}}/> by Antony90
+                </Typography>
             </Box>
         </>
     );
