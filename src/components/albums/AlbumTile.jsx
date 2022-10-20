@@ -1,4 +1,4 @@
-import { Button, ImageListItem, ImageListItemBar, Paper } from "@mui/material";
+import { Button, ImageListItem, ImageListItemBar } from "@mui/material";
 import React from "react";
 import { useNavigate } from 'react-router-dom'; 
 
@@ -15,6 +15,7 @@ const AlbumTile = ({ id, name, previewPhotoUrl }) => {
                 src={previewPhotoUrl}
                 loading="lazy"
                 style={{ borderRadius: "15px", overflow: 'hidden' }}
+                alt="album preview"
             />
             <ImageListItemBar 
                 title={name} 

@@ -1,11 +1,18 @@
 import { toast } from 'react-toastify';
 import getPredictions from '../../classify/getPredictions';
+import { getUserCollection } from '../../firebase/util';
+
 
 export const fetchPhotos = () => {
     return (dispatch, getState, { getFirestore }) => {
+        const userId = getState().user.id;
+        
         const unsub = 
-        getFirestore()
-        .collection('photos')
+        getUserCollection(
+            getFirestore(),
+            'photos',
+            userId
+        )
         .orderBy('createdAt', 'desc')
         .onSnapshot(snap => {
             const photos = snap.docs.map(doc => ({ ...doc.data(), id: doc.id }));
@@ -38,11 +45,14 @@ export const uploadPhotos = (photos) => {
                 autoClose: 3000 
             });
 
+            const userId = getState().user.id;
+
             // First add file object to firestore to generate its unique ID
             // Then upload file to storage, with name as ID
             // Get storage URL, update firestore object with URL
             // This means all files in storage have unique names                         
-            const photosCollection = db.collection('photos');
+            const photosCollection = getUserCollection(db, 'photos', userId);
+
             var numUploaded = 0;
 
             photos.forEach((file, idx) => {
@@ -52,7 +62,10 @@ export const uploadPhotos = (photos) => {
                     createdAt: db.FieldValue.serverTimestamp(),
                     albums: []
                 }
-                photosCollection.add(photo).then(async ref => {
+                console.log("Adding photo", photo)
+                photosCollection.add(photo)
+                .catch(err => console.log(err))
+                .then(async ref => {
                     if (uploadToast === null)
                         uploadToast = toast('Uploading files', { progress: 0 });
                     // Create a reference for the photo, using its 
@@ -60,23 +73,24 @@ export const uploadPhotos = (photos) => {
                     const photoRef = storageRef.child(ref.id);
                     
                     await photoRef.putString(file.base64, 'data_url', { contentType: file.type })
-                    .then(snap => snap.ref.getDownloadURL())
-                    .then(url => {
-                        // Update toast progress
-                        numUploaded++;
-                        const progress = numUploaded / numFiles;
-                        if (progress === 1) 
-                            toast.update(uploadToast, { 
-                                type: 'success', 
-                                render: 'Uploaded files', 
-                                autoClose: 3000,
-                                progress
-                            })
-                        else toast.update(uploadToast, { progress })
-                        
-                        // Update firestore url for photo 
-                        ref.update({ url});
-                    })
+                .then(snap => snap.ref.getDownloadURL())
+                .then(url => {
+                    // Update toast progress
+                    numUploaded++;
+                    const progress = numUploaded / numFiles;
+                    if (progress === 1) 
+                        toast.update(uploadToast, { 
+                            type: 'success', 
+                            render: 'Uploaded files', 
+                            autoClose: 3000,
+                            progress
+                        })
+                    else toast.update(uploadToast, { progress })
+                    
+                    // Update firestore url for photo 
+                    ref.update({ url });
+                })
+                
                 });
             });
         }).catch(err => {
@@ -98,9 +112,10 @@ export const uploadPhotos = (photos) => {
 
 export const deletePhoto = (id) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
+        const userId = getState().user.id;
+        
         // Delete from photo from firestore and storage
-        getFirestore()
-            .collection('photos')
+        getUserCollection(getFirestore(), 'photos', userId)
             .doc(id)
             .delete();
         
@@ -131,8 +146,9 @@ export const deleteSelectedPhotos = () => {
 
 export const deletePhotoTag = (id, tag) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        getFirestore()
-        .collection('photos')
+        const userId = getState().user.id;
+        
+        getUserCollection(getFirestore(), 'photos', userId)
         .doc(id)
         .update({
             tags: getFirebase().firestore.FieldValue.arrayRemove(tag)
@@ -147,8 +163,10 @@ export const deletePhotoTag = (id, tag) => {
 
 export const addPhotoTag = (id, tag) => {
     return (dispatch, getState, { getFirebase, getFirestore }) => {
-        const db = getFirestore();
-        db.collection('photos').doc(id).update({
+        const userId = getState().user.id;
+
+        getUserCollection(getFirestore(), 'photos', userId)
+        .doc(id).update({
             tags: getFirebase().firestore.FieldValue.arrayUnion(tag)
         });
 

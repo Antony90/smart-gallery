@@ -25,22 +25,6 @@ const darkTheme = createTheme({
   },
 });
 
-const redTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#000035',
-    },
-    secondary: {
-      main: '#3333ff'
-    },
-    background: {
-      main: '#20008e'
-    }
-  }
-  
-});
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>

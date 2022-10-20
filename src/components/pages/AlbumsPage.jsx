@@ -1,4 +1,4 @@
-import { Grid, ImageList, Typography } from '@mui/material'
+import { ImageList  } from '@mui/material'
 import { connect } from 'react-redux'
 import AlbumTile from '../albums/AlbumTile'
 
@@ -22,7 +22,7 @@ const mapStateToProps = state => ({
   getAlbumPreviewPhoto: albumId => {
     const albumPhotos = state.photos.all.filter(({ albums }) => albums.includes(albumId));
     const photo = albumPhotos[Math.floor((Math.random()*albumPhotos.length))]
-    return photo && photo.url || "https://via.placeholder.com/380";
+    return (photo && photo.url) || "https://via.placeholder.com/380";
   }
 })
 export default connect(mapStateToProps)(AlbumsPage);

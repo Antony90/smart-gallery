@@ -2,10 +2,11 @@ import { Avatar, Box, Button, Chip, Container, Divider, Grid, Link, Paper, Stack
 import React from 'react'
 import { Chart } from "react-google-charts";
 import { connect } from 'react-redux';
+import { signOut, deleteUser } from '../../store/actions/userActions';
 
 const paperStyle = { 
-  height: '200px', 
-  p: '10px', 
+  height: 'auto', 
+  p: '20px', 
   display: 'flex',
   flexDirection: 'column',
 }
@@ -21,7 +22,7 @@ const chartOptions = {
 }
 
 const GridItem = ({ title, children, cols }) => (
-  <Grid item md={cols}>
+  <Grid container item md={cols}>
     <Paper sx={paperStyle}>
       { title && <Typography variant='h5'>{title}</Typography> }
       <Box sx={{ p: 1 }}>
@@ -31,67 +32,134 @@ const GridItem = ({ title, children, cols }) => (
   </Grid>
 )
 
-const Dashboard = ({ tagsData, photosSummary, globalClassify }) => {
+
+const Dashboard = ({ tagsData, photosSummary, globalClassify, user }) => {
   const {
     numAlbums,
     numPhotos,
     mostCommonTag,
     numUniqueTags
   } = photosSummary;
+  
+  const PieChart = () => {
+    if (tagsData.length > 1) {
+      return (
+        <Chart
+          chartType="PieChart"
+          height={250}
+          data={tagsData}
+          options={chartOptions}
+        />
+      )
+    } else {
+      return "No photo tags data for pie chart.";
+    }
+  }
 
   return (
-    <Container maxWidth='md'>
-      <Grid container spacing={3}>
-        {/* Profile */}
-        <GridItem title='Profile' cols={6}>
-            <Avatar sx={{ width: '120px', height: '120px', mt: 1, float: 'left' }} src="https://i.pravatar.cc/900" />
-            <Divider orientation='vertical' sx={{ display: 'inline-block', ml: 7 }} />
-            <Box sx={{ float: 'right' }}>
-              <Stack>   
-                <Typography variant='h5' component='div' sx={{ my: 'auto', float: 'left' }}>
-                  Username
+      <Container maxWidth="md">
+          <Grid container spacing={3}>
+              {/* Profile */}
+              <GridItem title={`${user.displayName}`} cols={6}>
+                <Stack 
+                  direction='row' 
+                  divider={
+                    <Divider
+                      orientation="vertical"
+                      flexItem
+                    />
+                  }
+                  alignItems="center"
+                  justifyContent="center"
+                  spacing={5}
+                >
+                  <Avatar
+                      sx={{
+                          width: "120px",
+                          height: "120px",
+                          mt: 1,
+                          float: "left",
+                      }}
+                      src={user.photoURL}
+                  />
+
+                  <Box sx={{ float: "right" }}>
+                      <Stack>
+                          <Button
+                              variant="contained"
+                              color="success"
+                              sx={{ my: 1 }}
+                              onClick={signOut}
+                          >
+                              Sign out
+                          </Button>
+                          <Tooltip title="Delete all photos and albums">
+                              <Button
+                                  variant="contained"
+                                  color="error"
+                                  sx={{ my: 1 }}
+                                  onClick={deleteUser}
+                              >
+                                  Reset account
+                              </Button>
+                          </Tooltip>
+                      </Stack>
+                  </Box>
+                </Stack>
+                <Typography variant='body2' sx={{ mt: 2 }}>
+                  {user.email}
                 </Typography>
-                <Button variant='contained' color='success' sx={{ my: 1 }}>Sign out</Button>
-                <Tooltip title='Delete all photos and albums'>
-                  <Button variant='contained' color='error' sx={{ my: 1 }}>Reset account</Button>
-                </Tooltip>
-              </Stack>
-            </Box>
-        </GridItem>
+              </GridItem>
 
-        {/* Photos summary */}
-        <GridItem title='Photos Summary' cols={6}>
-          You have <Chip label={`${numPhotos} photos`} sx={{ my: '5px' }}/> with <Chip label={`${numAlbums} albums`} sx={{ my: '5px' }}/><br/>
-          <Chip label={mostCommonTag.tag} sx={{ my: '5px' }} /> is your most common tag with <Chip label={`${mostCommonTag.count} photos`} sx={{ my: '5px' }}/><br/>
-          There are <Chip label={`${numUniqueTags} unique tags`} sx={{ my: '5px' }} /> in your collection.
-        </GridItem>
+              {/* Photos summary */}
+              <GridItem title="Photos Summary" cols={6}>
+                  You have{" "}
+                  <Chip label={`${numPhotos} photos`} sx={{ my: "5px" }} /> with{" "}
+                  <Chip label={`${numAlbums} albums`} sx={{ my: "5px" }} />
+                  <br />
+                  <Chip label={mostCommonTag.tag} sx={{ my: "5px" }} /> is your
+                  most common tag with{" "}
+                  <Chip
+                      label={`${mostCommonTag.count} photos`}
+                      sx={{ my: "5px" }}
+                  />
+                  <br />
+                  There are{" "}
+                  <Chip
+                      label={`${numUniqueTags} unique tags`}
+                      sx={{ my: "5px" }}
+                  />{" "}
+                  in your collection.
+              </GridItem>
 
-        {/* Tag piechart */}
-        <GridItem cols={3}>
-          <Chart
-            chartType="PieChart"
-            height={250}
-            data={tagsData}
-            options={chartOptions}
-          />
-        </GridItem>
+              {/* Tag piechart */}
+              <GridItem cols={3}>
+                  <PieChart />
+              </GridItem>
 
-        <GridItem title='Image classification' cols={4}>
-          <Typography variant='body2'>
-            Photos are tagged using a Convolutional Neural Network trained on ~9000 classed Google images.
-            See my <Link href='https://github.com/Antony90/image-scene-classifier/'>Image Scene Classifier</Link>.
-          </Typography>
-        </GridItem>
+              <GridItem title="Image classification" cols={4}>
+                  <Typography variant="body2">
+                      Photos are tagged using a Convolutional Neural Network
+                      trained on ~9000 classed Google images. See my{" "}
+                      <Link href="https://github.com/Antony90/image-scene-classifier/">
+                          Image Scene Classifier
+                      </Link>
+                      .
+                  </Typography>
+              </GridItem>
 
-        
-        <GridItem title='Statistics' cols={5}>
-          <Typography variant='body'>
-            <Chip label={`${globalClassify} photos`} sx={{ my: '5px' }}/> have been classified globally
-          </Typography>
-        </GridItem>
-      </Grid>
-    </Container>
-  )
+              <GridItem title="Statistics" cols={5}>
+                  <Typography variant="body">
+                      <Chip
+                          label={`${globalClassify} photos`}
+                          sx={{ my: "5px" }}
+                      />{" "}
+                      have been classified globally
+                  </Typography>
+              </GridItem>
+          </Grid>
+      </Container>
+  );
 }
 
 const mapStateToProps = state => {
@@ -130,7 +198,8 @@ const mapStateToProps = state => {
       numAlbums: state.albums.all.length,
       numUniqueTags: tagCountMap.size,
       mostCommonTag
-    }
+    },
+    user: state.user
   };
 }
 

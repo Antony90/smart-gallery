@@ -1,9 +1,13 @@
 import { toast } from 'react-toastify'; 
+import { getUserCollection } from '../../firebase/util';
+
 
 export const fetchAlbums = () => {
     return (dispatch, getState, { getFirestore }) => {
+        const userId = getState().user.id;
         const unsub = 
-        getFirestore()
+        getUserCollection(getFirestore(), 'albums', userId)
+
         .collection('albums')
         .orderBy('name', 'asc')
         .onSnapshot(snap => {
@@ -20,11 +24,14 @@ export const fetchAlbums = () => {
 
 export const createAlbum = (albumName) => {
     return (dispatch, getState, { getFirestore }) => {
-        const db = getFirestore();
         const photoIds = getState().photos.selected.map(ph => ph.id)
+        const userId = getState().user.id;
 
-        db.collection('albums')
-        .add({
+        const db = getFirestore();
+        const albumsCollection = getUserCollection(db, 'albums', userId) ;
+        const photosCollection = getUserCollection(db, 'photos', userId) ;
+
+        albumsCollection.add({
             name: albumName
         })
         .then(doc => {
@@ -32,7 +39,7 @@ export const createAlbum = (albumName) => {
 
             // Add albumId to albums field for each photo
             photoIds.forEach(photoId => {
-                db.collection('photos')
+                photosCollection
                 .doc(photoId)
                 .update({
                     albums: db.FieldValue.arrayUnion(albumId)
@@ -44,8 +51,8 @@ export const createAlbum = (albumName) => {
 
 export const deleteAlbum = id => {
     return (dispatch, getState, { getFirestore }) => {
-        getFirestore()
-        .collection('albums')
+        const userId = getState().user.id;
+        getUserCollection(getFirestore(), 'albums', userId)
         .doc(id)
         .delete()
         .then(() => toast.success(`Deleted album ${id}`))

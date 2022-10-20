@@ -1,5 +1,4 @@
 import {
-    CssBaseline,
     Toolbar,
     Drawer,
     List,
@@ -10,7 +9,6 @@ import {
     ListItemText,
     ListItemIcon,
     ListItemSecondaryAction,
-    styled,
 } from '@mui/material';
 
 import ExpandLess from '@mui/icons-material/ExpandLessRounded';
@@ -19,7 +17,6 @@ import ExpandMore from '@mui/icons-material/ExpandMoreRounded';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AppBar from './AppBar';
-import { Box } from '@mui/system';
 import { connect } from 'react-redux';
 
 const listItemButton = {
