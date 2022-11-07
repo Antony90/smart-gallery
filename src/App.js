@@ -46,12 +46,12 @@ function App({ fetchPhotos, fetchAlbums, unsubscribe, user }) {
     // Subscribe to database updates
     // Reflected in local redux state
     useEffect(() => {
-        if (Object.keys(user).length !== 0) {
-            // user is not {}
-            fetchPhotos();
-            fetchAlbums();
-            return unsubscribe;
-        }
+        // if (Object.keys(user).length !== 0) {
+        //     // user is not {}
+        // }
+        fetchPhotos();
+        fetchAlbums();
+        return unsubscribe;
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -69,22 +69,14 @@ function App({ fetchPhotos, fetchAlbums, unsubscribe, user }) {
                     }}
                 >
                     <Routes>
-                        <Route path="/login" element={<LoginPage />} />
-                        <Route element={<ProtectedRoute />}>
-                            <Route path="/photos" element={<PhotosPage />} />
-                        </Route>
-                        <Route element={<ProtectedRoute />}>
-                            <Route
-                                path="/albums/:id"
-                                element={<AlbumPhotosPage />}
-                            />
-                        </Route>
-                        <Route element={<ProtectedRoute />}>
-                            <Route path="/albums" element={<AlbumsPage />} />
-                        </Route>
-                        <Route element={<ProtectedRoute />}>
-                            <Route path="/" element={<Dashboard />} />
-                        </Route>
+                        {/* <Route path="/login" element={<LoginPage />} /> */}
+                        <Route path="/photos" element={<PhotosPage />} />
+                        <Route
+                            path="/albums/:id"
+                            element={<AlbumPhotosPage />}
+                        />
+                        <Route path="/albums" element={<AlbumsPage />} />
+                        <Route path="/" element={<Dashboard />} />
                     </Routes>
                 </Box>
                 <Typography

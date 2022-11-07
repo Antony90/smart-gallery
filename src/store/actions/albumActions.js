@@ -7,8 +7,6 @@ export const fetchAlbums = () => {
         const userId = getState().user.id;
         const unsub = 
         getUserCollection(getFirestore(), 'albums', userId)
-
-        .collection('albums')
         .orderBy('name', 'asc')
         .onSnapshot(snap => {
             const albums = snap.docs.map(doc => ({
