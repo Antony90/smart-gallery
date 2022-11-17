@@ -19,9 +19,9 @@ import LeftIcon from '@mui/icons-material/ChevronLeftRounded';
 import DownloadIcon from '@mui/icons-material/CloudDownload';
 
 import { saveAs } from 'file-saver';
-import { useDispatch } from 'react-redux';
-import { addPhotoTag, deletePhoto, deletePhotoTag } from "../../store/actions/photoActions";
 import { Box } from "@mui/system";
+import { deletePhoto, removePhotoTag, addPhotoTag } from "../../store/photos";
+import { useAppDispatch } from "../../store";
 
 const photoNav = {
   position: 'fixed', 
@@ -32,13 +32,16 @@ const photoNav = {
 }
 
 // TODO db stores date, size, dims
-const PhotoView = ({ url, name, tags, id, open, onClickNext, onClose }) => {
+const PhotoView = ({ photo, open, onClickNext, onClose }) => {
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const {
+    url, name, tags, id
+  } = photo;
+
   const onClickDelete = () => dispatch(deletePhoto(id));
-  const onClickDeleteTag = (tag) => dispatch(deletePhotoTag(id, tag));
-  const onAddTag = (tag) => dispatch(addPhotoTag(id, tag));
-
+  const onClickDeleteTag = (tag) => dispatch(removePhotoTag({ id, tag }));
+  const onAddTag = (tag) => dispatch(addPhotoTag({ id, tag }));
 
   return (
     <Dialog open={open} onClose={onClose}>

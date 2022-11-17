@@ -1,32 +1,47 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import Photo from "../models/photo";
-import { RootState } from ".";
+import { Photo, PhotosMap } from "../models/Photo";
 import type { AsyncThunkConfig as Config } from "./config";
+import { collection, db } from '../firebase/';
+import { getDocs, query, Timestamp, where } from "firebase/firestore";
+import { RootState } from ".";
 
-export type PhotoIDMap = Map<string, Photo>;
 
 interface PhotosState {
-  all: PhotoIDMap;
+  all: PhotosMap;
   selected: string[]; // Array of Photo IDs
 }
 const initialState: PhotosState = {
-  all: new Map(),
+  all: {},
   selected: [],
 };
 
+const photosRef = collection<Photo>(db, 'photos');
+
 // type definition is: <return type, first function arg type, AsyncThunk config>
-export const fetchPhotos = createAsyncThunk<Photo[], void, Config>(
+export const fetchPhotos = createAsyncThunk<PhotosMap, void, Config>(
   "photo/fetch",
-  async () => {
+  async (_, { getState }) => {
     // fetch photos
-    throw new Error("Not implemented");
+    const userID = getState().auth.userID;
+    const q = query(photosRef);//, where("userID", "==", userID)); 
+    const photos: PhotosMap = {};
+    (await getDocs(q)).forEach((doc) => {
+      const photo = { ...doc.data(), id: doc.id, };
+      if (photo.createdAt instanceof Timestamp) {
+        photo.createdAt = photo.createdAt.toString();
+      }
+      photos[photo.id] = photo;
+    })
+    console.log(photos);
+    return photos;
   }
 );
 
 export const deletePhoto = createAsyncThunk<string, string, Config>(
   "photo/delete",
   async (id: string) => {
+    console.log(id);
     // Delete photo
     return id;
   }
@@ -74,10 +89,8 @@ const photosSlice = createSlice({
     builder
       .addCase(
         fetchPhotos.fulfilled,
-        (state, action: PayloadAction<Photo[]>) => {
-          action.payload.forEach((photo) => {
-            state.all.set(photo.id, photo);
-          });
+        (state, action: PayloadAction<PhotosMap>) => {
+          state.all = action.payload;
         }
       )
       .addCase(fetchPhotos.rejected, (state, action) => {
@@ -89,7 +102,7 @@ const photosSlice = createSlice({
       .addCase(
         deletePhoto.fulfilled,
         (state, action: PayloadAction<string>) => {
-          state.all.delete(action.payload);
+          // state.all = state.all.filter(({ id }) => id !== action.payload);
         }
       )
       .addCase(deletePhoto.rejected, (state, action) => {
@@ -99,9 +112,9 @@ const photosSlice = createSlice({
         addPhotoTag.fulfilled,
         (state, action: PayloadAction<PhotoIDTag>) => {
           const { id, tag } = action.payload;
-          state.all.get(id)?.tags.push(tag);
+          state.all[id].tags.push(tag);
         }
-      )
+        )
       .addCase(addPhotoTag.rejected, (state, action) => {
         // Toast notification
       })
@@ -109,18 +122,19 @@ const photosSlice = createSlice({
         removePhotoTag.fulfilled,
         (state, action: PayloadAction<PhotoIDTag>) => {
           const { id, tag: removedTag } = action.payload;
-          const photo = state.all.get(id);
-          if (photo !== undefined) {
-            const updatedTags = photo.tags.filter((tag) => tag !== removedTag);
-            photo.tags = updatedTags; // TODO: check if photo is a pointer and if updated in Map
-          }
+          state.all[id].tags = state.all[id].tags.filter((tag) => (
+            tag !== removedTag
+          ))
         }
       )
-      .addCase(addPhotoTag.rejected, (state, action) => {
+      .addCase(removePhotoTag.rejected, (state, action) => {
         // Toast notification
       });
   },
 });
+
+export const selectAllPhotos = (state: RootState) => state.photos.all;
+export const selectSelectedPhotos = (state: RootState) => state.photos.selected;
 
 export const { selectPhoto, clearSelection } = photosSlice.actions;
 export default photosSlice.reducer;

@@ -24,7 +24,7 @@ const listItemButton = {
     marginX: '12px'
 }
 
-const Navigation = ({ drawerWidth, navItems, albums }) => {
+const Navigation = ({ drawerWidth, navItems }) => {
     // Whether nested nav list items are expanded
     const [ open, setOpen ] = useState(true);
     let navigate = useNavigate();
@@ -80,7 +80,7 @@ const Navigation = ({ drawerWidth, navItems, albums }) => {
                     ))}
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <List disablePadding>
-                            {albums.map(({ name, id }) => (
+                            {[{name:'AlbumName', id: '2'}].map(({ name, id }) => (
                                 <ListItemButton key={id} sx={listItemButton} onClick={() => navigate(`/albums/${id}`)}>
                                     <ListItemText primary={name} inset/>
                                 </ListItemButton>
@@ -92,5 +92,5 @@ const Navigation = ({ drawerWidth, navItems, albums }) => {
         </>
     );
 };
-
-export default connect(state => ({ albums: state.albums.all }))(Navigation);
+//connect(state => ({ albums: state.albums.all }))(
+export default Navigation;

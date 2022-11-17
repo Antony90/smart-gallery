@@ -2,10 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 
-import { store, rrfProps } from './store/store';
 import { Provider } from 'react-redux';
-import { ReactReduxFirebaseProvider } from 'react-redux-firebase';
-
+import store from './store';
 import { BrowserRouter } from 'react-router-dom';
 
 import '@fontsource/roboto/300.css';
@@ -29,29 +27,27 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
     <Provider store={store}>
-      <ReactReduxFirebaseProvider {...rrfProps}>
-          <BrowserRouter>
-            <ThemeProvider theme={darkTheme}>
-              <CssBaseline />
-              <Box sx={{ display: 'flex' }}>
-                <App />
-              </Box>
-              <ToastContainer
-                position="bottom-left"
-                autoClose={600}
-                hideProgressBar
-                newestOnTop={false}
-                closeOnClick={false}
-                rtl={false}
-                pauseOnFocusLoss={false}
-                draggable={false}
-                pauseOnHover={false}
-                transition={Slide}
-                toastStyle={{ fontSize: '10pt', maxWidth: '230px' }}
-              />
-            </ThemeProvider>
-          </BrowserRouter>
-      </ReactReduxFirebaseProvider>
+        <BrowserRouter>
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <Box sx={{ display: 'flex' }}>
+              <App />
+            </Box>
+            <ToastContainer
+              position="bottom-left"
+              autoClose={600}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick={false}
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable={false}
+              pauseOnHover={false}
+              transition={Slide}
+              toastStyle={{ fontSize: '10pt', maxWidth: '230px' }}
+            />
+          </ThemeProvider>
+        </BrowserRouter>
     </Provider>
   // </React.StrictMode>
 );
