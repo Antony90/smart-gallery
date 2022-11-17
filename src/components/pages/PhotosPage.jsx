@@ -1,6 +1,4 @@
 import { connect } from "react-redux";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
 
 import PhotosList from "../photos/PhotoList";
 
@@ -19,12 +17,15 @@ import AlbumDialog from "../albums/AlbumDialog";
 import ActionButton from "../misc/ActionButton";
 import ActionButtonStack from "../misc/ActionButtonStack";
 import FileBase64 from "react-file-base64";
+import { selectAllPhotos } from "../../store/photos";
+import { useAppSelector } from "../../store";
 
 
 
-const PhotosPage = ({ photos, createAlbum, deleteSelectedPhotos, uploadPhotos }) => {
+const PhotosPage = ({ createAlbum, deleteSelectedPhotos, uploadPhotos }) => {
     const [isSelectMode, setSelectMode] = useState(false);
     const [openAlbumDialog, setOpenAlbumDialog] = useState(false);
+    const photos = useAppSelector(selectAllPhotos);
 
     const NewAlbumButton = () => (
         <ActionButton
@@ -90,22 +91,22 @@ const PhotosPage = ({ photos, createAlbum, deleteSelectedPhotos, uploadPhotos })
 
 
 
-const mapStateToProps = (state) => {
-    return {
-        photos: state.photos.all,
-    };
-};
+// const mapStateToProps = (state) => {
+//     return {
+//         photos: state.photos.all,
+//     };
+// };
 
-const mapDispatchToProps = (dispatch) => ({
-    createAlbum: (albumName) => {
-        dispatch(createAlbum(albumName));
-        dispatch(clearPhotoSelection);
-    },
-    deleteSelectedPhotos: () => dispatch(deleteSelectedPhotos()),
-    uploadPhotos: photos => dispatch(uploadPhotos(photos))
-});
+// const mapDispatchToProps = (dispatch) => ({
+//     createAlbum: (albumName) => {
+//         dispatch(createAlbum(albumName));
+//         dispatch(clearPhotoSelection);
+//     },
+//     deleteSelectedPhotos: () => dispatch(deleteSelectedPhotos()),
+//     uploadPhotos: photos => dispatch(uploadPhotos(photos))
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PhotosPage);
+export default PhotosPage;
 
 // connect(state => ({ photos: state.firestore.ordered.photos })),
 // firestoreConnect(state => {

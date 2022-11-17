@@ -1,7 +1,7 @@
 import { Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { signIn } from '../../store/actions/userActions';
-import { auth, provider } from '../../store/store';
+import { auth, provider } from '../../store/old_store';
 
 const SignInButton = () => {
     const dispatch = useDispatch();

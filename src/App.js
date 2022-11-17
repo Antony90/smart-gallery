@@ -14,19 +14,18 @@ import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import { Box, Toolbar, Typography, Link } from "@mui/material/";
 import { useEffect } from "react";
 
-import { fetchPhotos } from "./store/actions/photoActions";
-import "firebase/compat/firestore";
-import { connect } from "react-redux";
+import { fetchPhotos } from "./store/photos";
 import { fetchAlbums } from "./store/actions/albumActions";
-import LoginPage from "./components/pages/LoginPage";
+// import LoginPage from "./components/pages/LoginPage";
 import ProtectedRoute from "./components/misc/PrivateRoute";
+import { useAppDispatch } from "./store";
 
 // TODO
 // remove redux-react-firebase package
 // add albRef, photoRef, storageRef, toast instead to thunk with extra args
 // Dashboard page
 // Use unsub in cleanup
-function App({ fetchPhotos, fetchAlbums, unsubscribe, user }) {
+function App() {
     const navItems = [
         {
             text: "Dashboard",
@@ -43,16 +42,15 @@ function App({ fetchPhotos, fetchAlbums, unsubscribe, user }) {
         },
     ];
 
+    const dispatch = useAppDispatch();
     // Subscribe to database updates
     // Reflected in local redux state
     useEffect(() => {
         // if (Object.keys(user).length !== 0) {
         //     // user is not {}
         // }
-        fetchPhotos();
-        fetchAlbums();
-        return unsubscribe;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        dispatch(fetchPhotos());
+        // fetchAlbums();
     }, []);
 
     return (
@@ -71,12 +69,12 @@ function App({ fetchPhotos, fetchAlbums, unsubscribe, user }) {
                     <Routes>
                         {/* <Route path="/login" element={<LoginPage />} /> */}
                         <Route path="/photos" element={<PhotosPage />} />
-                        <Route
+                        {/* <Route
                             path="/albums/:id"
                             element={<AlbumPhotosPage />}
-                        />
-                        <Route path="/albums" element={<AlbumsPage />} />
-                        <Route path="/" element={<Dashboard />} />
+                        /> */}
+                        {/* <Route path="/albums" element={<AlbumsPage />} /> */}
+                        {/* <Route path="/" element={<Dashboard />} /> */}
                     </Routes>
                 </Box>
                 <Typography
@@ -106,19 +104,19 @@ function App({ fetchPhotos, fetchAlbums, unsubscribe, user }) {
     );
 }
 
-const mapDispatchToProps = (dispatch) => ({
-    fetchPhotos: (setUnsub) => dispatch(fetchPhotos(setUnsub)),
-    fetchAlbums: (setUnsub) => dispatch(fetchAlbums(setUnsub)),
-});
+// const mapDispatchToProps = (dispatch) => ({
+//     fetchPhotos: (setUnsub) => dispatch(fetchPhotos(setUnsub)),
+//     fetchAlbums: (setUnsub) => dispatch(fetchAlbums(setUnsub)),
+// });
 
-const mapStateToProps = (state) => ({
-    unsubscribe: () => {
-        const unsubPhotos = state.photos.unsub;
-        const unsubAlbums = state.albums.unsub;
-        unsubPhotos();
-        unsubAlbums();
-    },
-    user: state.user
-});
+// const mapStateToProps = (state) => ({
+//     unsubscribe: () => {
+//         const unsubPhotos = state.photos.unsub;
+//         const unsubAlbums = state.albums.unsub;
+//         unsubPhotos();
+//         unsubAlbums();
+//     },
+//     user: state.user
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
