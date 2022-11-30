@@ -1,0 +1,89 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import type { AsyncThunkConfig as Config } from "./config";
+import { RootState } from ".";
+import { People } from "../models/Person";
+import {
+  getPeople,
+  renamePerson as renamePersonRequest,
+  deleteFace as deleteFaceRequest,
+} from "../client/process";
+
+const initialState: People = {};
+
+// type definition is: <return type, first function arg type, AsyncThunk config>
+export const fetchPeople = createAsyncThunk<People, void, Config>(
+  "face/fetchPeople",
+  async (_, { getState }) => {
+    // fetch photos
+    const userID = getState().auth.userID;
+    return await getPeople(userID);
+  }
+);
+
+interface RenamePersonArgs {
+  personID: string;
+  name: string;
+}
+
+export const renamePerson = createAsyncThunk<
+  RenamePersonArgs,
+  RenamePersonArgs,
+  Config
+>("face/renamePerson", async ({ personID, name }, { getState }) => {
+  const userID = getState().auth.userID;
+  await renamePersonRequest(userID, personID, name);
+  return { personID, name };
+});
+
+interface DeleteFaceResponse {
+  photoID: string;
+  personIDs: string[];
+}
+
+export const deleteFace = createAsyncThunk<DeleteFaceResponse, string, Config>(
+  "face/deleteFace",
+  async (photoID, { getState }) => {
+    const userID = getState().auth.userID;
+    // Returns list of people that referenced the photo
+    const personIDs = await deleteFaceRequest(userID, photoID);
+    return { photoID, personIDs };
+  }
+);
+
+const faceSlice = createSlice({
+  name: "photo",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(
+        fetchPeople.fulfilled,
+        (state, action: PayloadAction<People>) => {
+          state = action.payload;
+        }
+      )
+      .addCase(
+        renamePerson.fulfilled,
+        (state, action: PayloadAction<RenamePersonArgs>) => {
+          const { personID, name } = action.payload;
+          state[personID].name = name;
+        }
+      )
+      .addCase(
+        deleteFace.fulfilled,
+        (state, action: PayloadAction<DeleteFaceResponse>) => {
+          const { photoID: deletedPhotoID, personIDs } = action.payload;
+          // For each person, remove the photo from their collection
+          personIDs.forEach(personID => {
+            const person = state[personID];
+            person.photoIDs = person.photoIDs.filter(phID => phID !== deletedPhotoID);
+          });
+        }
+      );
+  },
+});
+
+export const selectPeople = (state: RootState) => state.people;
+
+export default faceSlice.reducer;

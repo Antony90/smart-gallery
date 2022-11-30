@@ -5,11 +5,7 @@ import PhotosList from "../photos/PhotoList";
 import { Box } from "@mui/material";
 import { useState } from "react";
 import { createAlbum } from "../../store/actions/albumActions";
-import {
-    clearPhotoSelection,
-    deleteSelectedPhotos,
-    uploadPhotos,
-} from "../../store/actions/photoActions";
+import { handleUpload } from "../../client/photos";
 import { DeleteRounded, SelectAllRounded } from "@mui/icons-material";
 import UploadIcon from '@mui/icons-material/CloudUpload';
 
@@ -19,6 +15,7 @@ import ActionButtonStack from "../misc/ActionButtonStack";
 import FileBase64 from "react-file-base64";
 import { selectAllPhotos } from "../../store/photos";
 import { useAppSelector } from "../../store";
+import { userID } from "../../firebase";
 
 
 
@@ -62,7 +59,7 @@ const PhotosPage = ({ createAlbum, deleteSelectedPhotos, uploadPhotos }) => {
             sx={{ width: 'fit-content' }}
         >
             <div style={{ display: 'none' }}>
-                <FileBase64 multiple={true} onDone={uploadPhotos} />
+                <FileBase64 multiple={true} onDone={photos => handleUpload(photos, userID)} />
             </div>
         </ActionButton>)
 

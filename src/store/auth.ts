@@ -8,10 +8,10 @@ import { collection, doc, getDoc } from "firebase/firestore";
 export type PhotoIDMap = Map<string, Photo>;
 
 interface PhotosState {
-  userID: string | null;
+  userID: string;
 }
 const initialState: PhotosState = {
-  userID: null
+  userID: ""
 };
 
 const authSlice = createSlice({

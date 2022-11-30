@@ -5,6 +5,7 @@ import type { AsyncThunkConfig as Config } from "./config";
 import { collection, db } from '../firebase/';
 import { getDocs, query, Timestamp, where } from "firebase/firestore";
 import { RootState } from ".";
+import { deleteFace } from "./people";
 
 
 interface PhotosState {
@@ -40,8 +41,10 @@ export const fetchPhotos = createAsyncThunk<PhotosMap, void, Config>(
 
 export const deletePhoto = createAsyncThunk<string, string, Config>(
   "photo/delete",
-  async (id: string) => {
+  async (id: string, { dispatch }) => {
     console.log(id);
+    // Also delete people references to the photo
+    await dispatch(deleteFace(id));
     // Delete photo
     return id;
   }

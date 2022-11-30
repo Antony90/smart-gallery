@@ -1,7 +1,7 @@
 export type Person = {
     id: string; 
     name: string;
-    faceIDs: string[];
+    photoIDs: string[];
 }
 
 // Person ID to photo IDs where photo contains person's Face

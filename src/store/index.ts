@@ -4,11 +4,13 @@ import type { TypedUseSelectorHook } from 'react-redux'
 
 import photosReducer from "./photos";
 import authReducer from "./auth";
+import peopleReducer from "./people";
 
 const store = configureStore({
   reducer: {
     photos: photosReducer,
-    auth: authReducer,
+    people: peopleReducer,
+    auth: authReducer
   },
 })
 export default store;
