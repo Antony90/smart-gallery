@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { collection as getCollection, CollectionReference, DocumentData, Firestore, getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const config = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -12,6 +13,7 @@ const config = {
 
 export const app = initializeApp(config);
 export const db = getFirestore(app);
+export const storage = getStorage(app);
 
 export const collection = <T=DocumentData>(db: Firestore, path: string) => {
   return getCollection(db, path) as CollectionReference<T>
