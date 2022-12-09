@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import { deleteAlbum } from '../../store/actions/albumActions';
 import ActionButton from '../misc/ActionButton';
 import ActionButtonStack from '../misc/ActionButtonStack';
-import PhotoList from '../photos/PhotoList'
+import PhotoCollage from '../photos/PhotoCollage'
 
 const AlbumPhotosPage = ({ albumPhotos, deleteAlbum }) => {
   // Get album id from query string parameters
@@ -14,19 +14,19 @@ const AlbumPhotosPage = ({ albumPhotos, deleteAlbum }) => {
     <ActionButton
       label='Delete album'
       icon={<DeleteForeverRounded />}
-      onClick={() => deleteAlbum(id)}  
+      onClick={() => deleteAlbum(id)}
     />
   )
-  
+
   return (
     <>
-      <PhotoList photos={albumPhotos(id)} isSelectMode={false} />
+      <PhotoCollage photos={albumPhotos(id)} isSelectMode={false} />
       <ActionButtonStack>
-        <DeleteAlbumButton/>
+        <DeleteAlbumButton />
       </ActionButtonStack>
     </>
   )
-  
+
 }
 
 const mapStateToProps = state => ({
