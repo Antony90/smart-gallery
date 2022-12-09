@@ -79,6 +79,7 @@ export const uploadPhotos = (photos) => {
                     numUploaded++;
                     const progress = numUploaded / numFiles;
                     if (progress === 1) 
+                        console.log("!!!!!!!!!!!!!!!!!");
                         toast.update(uploadToast, { 
                             type: 'success', 
                             render: 'Uploaded files', 

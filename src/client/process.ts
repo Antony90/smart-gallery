@@ -31,7 +31,8 @@ export const processFaces = async (userID: string, base64Photos: string[], photo
     const photoData = base64Photos.map((photo, idx) => {
         return { data: photo, id: photoIDs[idx] };
     })
-    await axios.post(`/faces/${userID}/process`, photoData);
+    const { data } = await axios.post<number>(`/faces/${userID}/process`, photoData);
+    return data; // number of faces detected
 }
 export type PhotoResult = {
     tags: string[];

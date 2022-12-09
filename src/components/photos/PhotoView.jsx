@@ -18,7 +18,6 @@ import RightIcon from '@mui/icons-material/ChevronRightRounded';
 import LeftIcon from '@mui/icons-material/ChevronLeftRounded';
 import DownloadIcon from '@mui/icons-material/CloudDownload';
 
-import { saveAs } from 'file-saver';
 import { Box } from "@mui/system";
 import { deletePhoto, removePhotoTag, addPhotoTag } from "../../store/photos";
 import { useAppDispatch } from "../../store";
@@ -70,7 +69,7 @@ const PhotoView = ({ photo, open, onClickNext, onClose }) => {
               <IconButton onClick={onClickDelete}><DeleteIcon /></IconButton>
             </Tooltip>
             <Tooltip title='Download Image'>
-              <IconButton onClick={() => saveAs(url, 'out.jpg')}><DownloadIcon /></IconButton>
+              <IconButton onClick={() => window.open(url)}><DownloadIcon /></IconButton>
             </Tooltip>
             <TextField 
               variant='outlined' 

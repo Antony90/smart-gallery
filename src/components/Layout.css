@@ -1,0 +1,37 @@
+.header {
+  position:fixed;
+  width: 100%;
+  left:0;
+  top:0;
+  right: 0;
+  z-index: 1000;
+}
+
+.logo { 
+  float: left;
+  display:flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 7px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-color: white;
+  width: 144px;
+  height: 40px;
+  margin: 12px 5px 12px 0;
+}
+
+.logo-icon { 
+  color: white;
+  height: 17px;
+  width: 17px;
+  font-size: 17px;
+  margin-right: 8px;
+}
+
+.logo-title {
+  /* override antd Typography style */
+  margin: 0px !important;
+  color: white !important;
+  user-select: none;
+}

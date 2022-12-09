@@ -9,7 +9,7 @@ export type AsyncThunkConfig = {
   /** type of the `extra` argument for the thunk middleware, which will be passed in as `thunkApi.extra` */
   // extra?: unknown
   /** type to be passed into `rejectWithValue`'s first argument that will end up on `rejectedAction.payload` */
-  // rejectValue?: unknown
+  // rejectValue: string
   /** return type of the `serializeError` option callback */
   // serializedErrorType?: unknown
   /** type to be returned from the `getPendingMeta` option callback & merged into `pendingAction.meta` */

@@ -1,7 +1,6 @@
 import { Avatar, Box, Button, Chip, Container, Divider, Grid, Link, Paper, Stack, Tooltip, Typography } from '@mui/material';
 import React from 'react'
 import { Chart } from "react-google-charts";
-import { connect } from 'react-redux';
 import { signOut, deleteUser } from '../../store/actions/userActions';
 
 const paperStyle = { 
@@ -32,15 +31,57 @@ const GridItem = ({ title, children, cols }) => (
   </Grid>
 )
 
+const getData = photos => {
+  const tagCountMap = new Map();
+  photos.forEach(({ tags }) => {
+    tags.forEach(tag => {
+      const currVal = tagCountMap.get(tag)
+      tagCountMap.set(tag, (currVal && currVal + 1) || 1)
+    })
+  })
+  const pieChartData = [ ["Tag", "Photos tagged"], ...Array.from(tagCountMap) ]
 
-const Dashboard = ({ tagsData, photosSummary, globalClassify, user }) => {
+  const maxTagFromChart = pieChartData.reduce(
+    (currMax, currVal) => {
+      return (currVal.value > currMax.value) ?
+        currVal : currMax;
+    }, 
+    // Initial comparison
+    {
+      title: 'None',
+      value: 0
+    }
+  );
+   
+  // Convert from piechart data
+  const mostCommonTag = {
+    tag: maxTagFromChart.title,
+    count: maxTagFromChart.value
+  }
+      
+  return { 
+    tagsData: pieChartData,
+    photosSummary: {
+      numPhotos: photos.length,
+      numAlbums: 0, //state.albums.all.length,
+      numUniqueTags: tagCountMap.size,
+      mostCommonTag
+    }
+  };
+}
+
+
+const Dashboard = () => {
   const {
     numAlbums,
     numPhotos,
     mostCommonTag,
     numUniqueTags
-  } = photosSummary;
+  } = { numAlbums: 0, numPhotos: 0, mostCommonTag: 'None', numUniqueTags:0}; //photosSummary;
   
+  const tagsData = [];
+  const globalClassify = 0;
+
   const PieChart = () => {
     if (tagsData.length > 1) {
       return (
@@ -54,6 +95,12 @@ const Dashboard = ({ tagsData, photosSummary, globalClassify, user }) => {
     } else {
       return "No photo tags data for pie chart.";
     }
+  }
+
+  const user = {
+    displayName: 'Test',
+    photoURL: 'https://www.google.com',
+    email: 'test@google.com'
   }
 
   return (
@@ -162,45 +209,6 @@ const Dashboard = ({ tagsData, photosSummary, globalClassify, user }) => {
   );
 }
 
-const mapStateToProps = state => {
-  const photos = state.photos.all;
-  const tagCountMap = new Map();
-  photos.forEach(({ tags }) => {
-    tags.forEach(tag => {
-      const currVal = tagCountMap.get(tag)
-      tagCountMap.set(tag, (currVal && currVal + 1) || 1)
-    })
-  })
-  const pieChartData = [ ["Tag", "Photos tagged"], ...Array.from(tagCountMap) ]
 
-  const maxTagFromChart = pieChartData.reduce(
-    (currMax, currVal) => {
-      return (currVal.value > currMax.value) ?
-        currVal : currMax;
-    }, 
-    // Initial comparison
-    {
-      title: 'None',
-      value: 0
-    }
-  );
-   
-  // Convert from piechart data
-  const mostCommonTag = {
-    tag: maxTagFromChart.title,
-    count: maxTagFromChart.value
-  }
-      
-  return { 
-    tagsData: pieChartData,
-    photosSummary: {
-      numPhotos: photos.length,
-      numAlbums: state.albums.all.length,
-      numUniqueTags: tagCountMap.size,
-      mostCommonTag
-    },
-    user: state.user
-  };
-}
 
-export default connect(mapStateToProps)(Dashboard);
+export default Dashboard;

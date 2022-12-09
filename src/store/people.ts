@@ -12,11 +12,10 @@ import {
 const initialState: People = {};
 
 // type definition is: <return type, first function arg type, AsyncThunk config>
-export const fetchPeople = createAsyncThunk<People, void, Config>(
+export const fetchPeople = createAsyncThunk<People, string, Config>(
   "face/fetchPeople",
-  async (_, { getState }) => {
+  async (userID, { getState }) => {
     // fetch photos
-    const userID = getState().auth.userID;
     return await getPeople(userID);
   }
 );
@@ -40,11 +39,14 @@ interface DeleteFaceResponse {
   photoID: string;
   personIDs: string[];
 }
+interface DeleteFaceArgs {
+  userID: string;
+  photoID: string;
+}
 
-export const deleteFace = createAsyncThunk<DeleteFaceResponse, string, Config>(
+export const deleteFace = createAsyncThunk<DeleteFaceResponse, DeleteFaceArgs, Config>(
   "face/deleteFace",
-  async (photoID, { getState }) => {
-    const userID = getState().auth.userID;
+  async ({ userID, photoID }, { getState }) => {
     // Returns list of people that referenced the photo
     const personIDs = await deleteFaceRequest(userID, photoID);
     return { photoID, personIDs };
@@ -60,7 +62,7 @@ const faceSlice = createSlice({
       .addCase(
         fetchPeople.fulfilled,
         (state, action: PayloadAction<People>) => {
-          state = action.payload;
+          return action.payload;
         }
       )
       .addCase(
