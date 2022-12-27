@@ -34,7 +34,7 @@ const router = createBrowserRouter([
         },
         {
           path: "photos",
-          element: <PhotosPage createAlbum={null} deleteSelectedPhotos={null} />
+          element: <PhotosPage />//createAlbum={null} deleteSelectedPhotos={null} />
         }, {
           path: "faces",
           element: <FacesPage />
