@@ -4,9 +4,9 @@ import { getPeople, predictPhotoTags, processFaces } from "./process";
 import { collection, db, storage } from "../firebase";
 import { Id, toast } from "react-toastify";
 import { Photo, PhotosMap } from "../models/Photo";
-import { CollectionReference, doc, DocumentSnapshot, getDoc, getDocs, query, QueryDocumentSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { CollectionReference, deleteDoc, doc, DocumentSnapshot, getDoc, getDocs, query, QueryDocumentSnapshot, serverTimestamp, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 
-export interface FileInfo {
+export type FileInfo = {
   name: string;
   base64: string;
   type: string;
@@ -36,7 +36,7 @@ export const getPhotos = async (userID: string) => {
   return photos;
 }
 
-const uploadPhotos = async (files: FileInfo[], photosTags: string[][], photosRef: CollectionReference<Photo>) => {
+const uploadPhotos = async (files: FileInfo[], photosTags: string[][]) => {
   const newPhotosMap: PhotosMap = {}; // Store new, uploaded photos
   
   await Promise.all(files.map(async (file, idx) => {
@@ -84,7 +84,7 @@ export const handleUpload = async (photos: FileInfo[], userID: string) => {
   const tags = photoResults.map(result => result.tags);
 
   // Upload to firebase
-  const newPhotos = await uploadPhotos(photos, tags, photosRef);
+  const newPhotos = await uploadPhotos(photos, tags);
   
   // Filter ids of photos which contain faces
   const facePhotoIDs = Object.keys(newPhotos).filter((_, idx) => photoResults[idx].has_face);
@@ -93,3 +93,7 @@ export const handleUpload = async (photos: FileInfo[], userID: string) => {
     .map(file => file.base64);
   return { newPhotos, facePhotoIDs, facePhotosBase64 } as HandleUploadReturnType;
 };
+
+export const deletePhoto = async (id: string, userID: string) => {
+  await deleteDoc(doc(photosRef, id));
+}

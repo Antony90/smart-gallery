@@ -1,7 +1,7 @@
 import './Layout.css';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Layout as ADLayout, Breadcrumb, Menu, Typography, Space, FloatButton } from 'antd';
-import { CodepenOutlined, DingtalkOutlined, HomeOutlined, PictureOutlined, TeamOutlined } from '@ant-design/icons';
+import { CodepenOutlined, DingtalkOutlined, FolderOpenOutlined, HomeOutlined, PictureOutlined, TeamOutlined } from '@ant-design/icons';
 import { blue } from '@ant-design/colors';
 import { useState } from 'react';
 const { Header, Content, Footer } = ADLayout;
@@ -22,6 +22,11 @@ const menuItems = [
     label: 'Faces',
     key: '/faces',
     icon: <TeamOutlined />
+  },
+  {
+    label: 'Albums',
+    key: '/albums',
+    icon: <FolderOpenOutlined />
   }
 ]
 
@@ -42,18 +47,16 @@ const Layout: React.FC = () => {
           >Smart Gallery</Title>
         </div>
 
-        <Space>
-          <Menu
-            items={menuItems}
-            mode="horizontal"
-            theme="dark"
-            selectedKeys={[selected]}
-            onClick={(e) => {
-              setSelected(e.key);
-              navigate(e.key)
-            }}
-          />
-        </Space>
+        <Menu
+          items={menuItems}
+          mode="horizontal"
+          theme="dark"
+          selectedKeys={[selected]}
+          onClick={(e) => {
+            setSelected(e.key);
+            navigate(e.key)
+          }}
+        />
       </Header>
       <Content style={{ margin: '75px 50px' }}>
         {/* <Breadcrumb style={{ margin: '16px 0' }}>

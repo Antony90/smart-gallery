@@ -9,6 +9,7 @@ import { deleteFace, fetchPeople } from "./people";
 import {
   FileInfo,
   getPhotos,
+  deletePhoto as deletePhotoAsync,
   handleUpload,
   HandleUploadReturnType,
 } from "../client/photos";
@@ -101,12 +102,32 @@ interface DeletePhotoArgs {
 export const deletePhoto = createAsyncThunk<string, DeletePhotoArgs, Config>(
   "photo/delete",
   async ({ userID, photoID }, { dispatch }) => {
+    await deletePhotoAsync(photoID, userID)
     // Also delete people references to the photo
     await dispatch(deleteFace({ userID, photoID }));
     // Delete photo
     return photoID;
   }
 );
+
+export const deleteSelectedPhotos = createAsyncThunk<string[], string, Config>(
+  "photo/deleteSelected",
+  async (userID, { dispatch, getState }) => {
+    const selectedPhotoIDs = getState().photos.selected;
+    if (selectAllPhotos.length === 0) {
+      throw Error("Expected non-empty selected photo IDs array");
+    }
+    
+    await Promise.all(selectedPhotoIDs.map(async (photoID) => {
+      await dispatch(deletePhoto({ userID, photoID }));
+    }))
+    await dispatch(fetchPeople(userID)); // Refresh people
+    return selectedPhotoIDs;
+  }
+);
+
+
+
 export interface PhotoIDTag {
   id: string;
   tag: string;
@@ -164,7 +185,7 @@ const photosSlice = createSlice({
       .addCase(
         deletePhoto.fulfilled,
         (state, action: PayloadAction<string>) => {
-          // state.all = state.all.filter(({ id }) => id !== action.payload);
+          delete state.all[action.payload]; // remove key from photos map
         }
       )
       .addCase(deletePhoto.rejected, (state, action) => {
@@ -203,9 +224,13 @@ const photosSlice = createSlice({
             autoClose: 3000,
           });
         }
+      })
+      .addCase(deleteSelectedPhotos.fulfilled, (state, action) => {
+        console.log("Deleted selected photos");
       });
-  },
+  },    
 });
+
 
 export const selectAllPhotos = (state: RootState) => state.photos.all;
 export const selectSelectedPhotos = (state: RootState) => state.photos.selected;

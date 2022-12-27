@@ -3,12 +3,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 
 import photosReducer, { fetchPhotos } from "./photos";
-import authReducer from "./auth";
 import peopleReducer, { fetchPeople } from "./people";
+import albumsReducer, { fetchAlbums } from "./albums";
+import authReducer from "./auth";
 
 const store = configureStore({
   reducer: {
     photos: photosReducer,
+    albums: albumsReducer,
     people: peopleReducer,
     auth: authReducer
   },
@@ -29,5 +31,6 @@ export function fetchData (userID: string) {
   return (dispatch: AppDispatch) => {
     dispatch(fetchPhotos(userID));
     dispatch(fetchPeople(userID));
+    dispatch(fetchAlbums(userID));
   }
 }
