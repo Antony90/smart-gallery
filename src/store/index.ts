@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import type { TypedUseSelectorHook } from 'react-redux'
 
 import photosReducer, { fetchPhotos } from "./photos";
-import peopleReducer, { fetchPeople } from "./people";
 import albumsReducer, { fetchAlbums } from "./albums";
+import peopleReducer, { fetchPeople } from "./people";
 import authReducer from "./auth";
 
 const store = configureStore({

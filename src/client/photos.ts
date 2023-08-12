@@ -79,7 +79,7 @@ export const handleUpload = async (photos: FileInfo[], userID: string) => {
 
   // Make tag predictions for each photo
   const base64Photos = photos.map((f) => f.base64);
-  const photoResults = await predictPhotoTags(base64Photos);
+  const photoResults = [{tags:["nature"], has_face: false}];//await predictPhotoTags(base64Photos);
   // Array of tags for all photos
   const tags = photoResults.map(result => result.tags);
 

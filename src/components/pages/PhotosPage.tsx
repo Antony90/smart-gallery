@@ -1,6 +1,6 @@
 import PhotoCollage from "../photos/PhotoCollage";
 
-import { FC, useState } from "react";
+import React, { useState } from "react";
 // import { createAlbum } from "../../store/actions/albumActions";
 import { FileInfo, handleUpload } from "../../client/photos";
 
@@ -71,6 +71,7 @@ const PhotosPage = () => {
     dispatch(uploadPhotos({ photos, userID }))
   };
 
+  const fileUploadInput = React.useRef(null);
   return (
     <>
       <AlbumDialog
@@ -113,27 +114,31 @@ const PhotosPage = () => {
 
       </FloatButton.Group>
 
+      <input
+        multiple
+        ref={fileUploadInput}
+        type="file"
+        accept="image/png, image/jpeg"
+        style={{display: 'none'}}
+        onChange={(e) => {
+          const files = e.currentTarget.files;
+          console.log(files)
+          if (files != null) onClickUpload(files);
+        }}
+      />
       <FloatButton
         tooltip="Upload"
         icon={<CloudUploadOutlined />}
+        // @ts-ignore
+        onClick={(e) => fileUploadInput.current.click()}
       />
-      <div style={{ position: 'fixed', right: 94 }}>
         {/* <Button
           tye="primary"
           icon={<CloudUploadOutlined />}
           onClick={(e) => onClickUpload()}
           style={{ marginTop: 16 }}
         />p */}
-        <input
-          multiple
-          type="file"
-          accept="image/png, image/jpeg"
-          onChange={(e) => {
-            const files = e.currentTarget.files;
-            console.log(files)
-            if (files != null) onClickUpload(files);
-          }}
-        />
+      <div style={{ position: 'fixed', right: 94 }}>
       </div>
     </>
   );

@@ -1,5 +1,11 @@
 ## Usage
 
+### Run local
+
+```npm run start```
+
+
+
 Create `.env` in the project's root directory with environment variables appropriately filled:
 
 ``` 

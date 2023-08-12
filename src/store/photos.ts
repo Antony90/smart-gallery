@@ -38,6 +38,7 @@ interface UploadPhotosArgs {
   photos: FileInfo[];
   userID: string;
 }
+
 export const uploadPhotos = createAsyncThunk<
   PhotosMap,
   UploadPhotosArgs,

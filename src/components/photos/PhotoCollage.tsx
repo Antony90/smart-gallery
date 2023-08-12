@@ -1,22 +1,37 @@
 import React, { useState } from "react";
+import RPGallery, { GalleryI, PhotoProps, RenderImageProps } from 'react-photo-gallery';
+// import "react-image-lightbox/style.css";
 
 import PhotoTile from "./PhotoTile";
 import PhotoView from "./PhotoView";
-import { useAppDispatch, useAppSelector } from "../../store";
-import { selectPhoto, selectSelectedPhotos } from "../../store/photos";
-import { Photo, PhotosMap } from "../../models/Photo";
-import _Gallery, { GalleryI, RenderImageProps } from 'react-photo-gallery';
-import "react-image-lightbox/style.css";
+
 import { Button, Card, Result, Typography } from "antd";
 import { BulbOutlined } from "@ant-design/icons";
+
+import { useAppDispatch, useAppSelector } from "../../store";
+import { selectPhoto, selectSelectedPhotos } from "../../store/photos";
+
+import { Photo, PhotosMap } from "../../models/Photo";
 
 interface PhotoListProps {
   photos: PhotosMap;
   isSelectMode: boolean;
 }
 
-const Gallery = _Gallery as unknown as GalleryI<Photo & { selected: boolean }>
-const { Text } = Typography;
+const Gallery = RPGallery as unknown as GalleryI<Photo & { selected: boolean }>
+type GalleryPhoto = {
+  index: number;
+  next: PhotoProps<Photo & {
+    selected: boolean;
+  }> | null;
+  photo: PhotoProps<Photo & {
+    selected: boolean;
+  }>;
+  previous: PhotoProps<Photo & {
+    selected: boolean;
+  }> | null;
+}
+
 const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
   const selectedPhotoIDs = useAppSelector(selectSelectedPhotos);
   const dispatch = useAppDispatch();
@@ -43,6 +58,8 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
       setPhotoIdx(index);
     }
   }
+
+
 
   // const photoTiles = Object.entries(photos).map(([id, photo], i) => (
   //   <PhotoTile
@@ -75,12 +92,13 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
   return (
     <>
       {/* {photoView} */}
+      {photoIndex > 0 && <div>Photo View</div>}
       {photoArray.length > 0 ? 
         <Gallery
           photos={photoArray}
-          renderImage={(props) => <PhotoTile {...props} />}
+          renderImage={(props: any) => <PhotoTile {...props} />}
           margin={6}
-          onClick={(e, photo) => onClickPhoto(photo.index)}
+          onClick={(_: any, photo: GalleryPhoto) => onClickPhoto(photo.index)}
         /> 
       : <Result
           title="No Photos"
