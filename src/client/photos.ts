@@ -38,30 +38,40 @@ export const getPhotos = async (userID: string) => {
 
 const uploadPhotos = async (files: FileInfo[], photosTags: string[][]) => {
   const newPhotosMap: PhotosMap = {}; // Store new, uploaded photos
-  
-  await Promise.all(files.map(async (file, idx) => {
-    const photoRef = doc(photosRef);
-    // Create a reference for the photo, using its
-    // firestore  photo ID as its name
-    const photoStorageRef = ref(storage, photoRef.id);
-    const src = await uploadString(photoStorageRef, file.base64, 'data_url')
-      .then(() => getDownloadURL(photoStorageRef));
-    const photoDoc = {
-      name: file.name,
-      width: file.width,
-      height: file.height,
-      tags: photosTags[idx],
-      createdAt: serverTimestamp(),
-      src,
-    };
-    console.log(photoDoc);
-    await setDoc(photoRef, photoDoc);
-    await updateDoc(photoRef, { src });
+  const loadingToast = toast.loading(`Uploading ${files.length} photo` + (files.length === 1 ? "" : "s"), { progress: 0 });
 
-    const photo = docToPhoto(await getDoc(photoRef));
-    newPhotosMap[photoRef.id] = photo;
-  }));
+  try {
+    await Promise.all(files.map(async (file, idx) => {
+      const photoRef = doc(photosRef);
+      // Create a reference for the photo, using its
+      // firestore  photo ID as its name
+      const photoStorageRef = ref(storage, photoRef.id);
 
+      // Upload base64 image and get URL for client
+      const src = await uploadString(photoStorageRef, file.base64, 'data_url')
+        .then(() => getDownloadURL(photoStorageRef));
+
+      // Create doc and add to firebase database
+      const photoDoc = {
+        name: file.name,
+        width: file.width,
+        height: file.height,
+        tags: photosTags[idx],
+        createdAt: serverTimestamp(),
+        src,
+      };
+      console.log(photoDoc);
+      await setDoc(photoRef, photoDoc);
+
+      const photo = docToPhoto(await getDoc(photoRef));
+      newPhotosMap[photoRef.id] = photo;
+      toast.update(loadingToast, { progress: (idx+1)/ files.length });
+    }))
+  } catch (err) {
+    toast.update(loadingToast, { type: 'error', render: "Upload error " + err });
+    return newPhotosMap;
+  }
+  toast.update(loadingToast, { type: 'success', render: `Uploaded ${files.length} photo` + (files.length === 1 ? "" : "s"), isLoading: false });
   return newPhotosMap;
 }
 
@@ -70,6 +80,12 @@ export interface HandleUploadReturnType {
   facePhotoIDs: string[];
   facePhotosBase64: string[];
 }
+
+/**
+ * @param photos HTML File objects for upload images
+ * @param userID Client's user id
+ * @returns new Photo objects, array of photo IDs with faces, base64 of photos with faces
+ */
 export const handleUpload = async (photos: FileInfo[], userID: string) => {
   // First add file object to firestore to generate its unique ID
   // Then upload file to storage, with name as ID
@@ -79,7 +95,9 @@ export const handleUpload = async (photos: FileInfo[], userID: string) => {
 
   // Make tag predictions for each photo
   const base64Photos = photos.map((f) => f.base64);
-  const photoResults = [{tags:["nature"], has_face: false}];//await predictPhotoTags(base64Photos);
+  // TODO: return face bounding boxes
+  const photoResults = await predictPhotoTags(base64Photos);
+
   // Array of tags for all photos
   const tags = photoResults.map(result => result.tags);
 

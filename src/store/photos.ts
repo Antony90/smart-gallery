@@ -45,9 +45,6 @@ export const uploadPhotos = createAsyncThunk<
   Config
 >("photo/upload", async ({ photos, userID }, { rejectWithValue, dispatch }) => {
   // Uploads photos & returns photo IDs which include a face
-  const infoToast = toast.loading(
-    `Classifying ${photos.length} photo` + (photos.length === 1 ? "" : "s")
-  );
   let uploadData: HandleUploadReturnType;
   try {
     uploadData = await handleUpload(photos, userID);
@@ -62,28 +59,24 @@ export const uploadPhotos = createAsyncThunk<
       return rejectWithValue("Unknown error!");
     }
   }
+  
 
   const { newPhotos, facePhotoIDs, facePhotosBase64 } = uploadData;
   if (facePhotoIDs.length !== 0) {
     // For photos with faces, update people-photo mappings using these photos
-    toast.update(infoToast, {
-      render: `Processing faces of ${facePhotoIDs.length} photos`,
-    });
+    const facesToast = toast.loading(`Processing faces of ${facePhotoIDs.length} photo(s)`);
     await processFaces(userID, facePhotosBase64, facePhotoIDs)
       .then((numFaces) => {
-        toast.update(infoToast, {
+        toast.update(facesToast, {
           type: "success",
           render:
-            `Classified ${photos.length} photo` +
-            (photos.length === 1 ? "" : "s") +
-            ` and processed ${numFaces} face` +
-            (numFaces === 1 ? "" : "s"),
+            `Processed ${numFaces} face` + (numFaces === 1 ? "" : "s"),
           isLoading: false,
           autoClose: 3000
         });
       })
       .catch((err) => {
-        toast.update(infoToast, {
+        toast.update(facesToast, {
           render: `Error processing faces ${err}`,
           isLoading: false,
           autoClose: 3000

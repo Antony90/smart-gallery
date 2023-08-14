@@ -1,5 +1,6 @@
 import axios from "axios";
 import { People } from "../models/Person";
+import { toast } from "react-toastify";
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 
 type PersonData = {
@@ -39,6 +40,8 @@ export type PhotoResult = {
     has_face: boolean;
 }
 export const predictPhotoTags = async (images: string[]) => {
+    const infoToast = toast.loading(`Classifying ${images.length} photo` + (images.length === 1 ? "" : "s"));
     const { data } = await axios.post<PhotoResult[]>("/classify", images);
+    toast.update(infoToast, { render: `Classified ${images.length} photo` + (images.length === 1 ? "" : "s"), type: "success", isLoading: false });
     return data;
 }

@@ -8,29 +8,27 @@
 }
 
 .logo { 
-  float: left;
-  display:flex;
-  align-items: center;
+  /* float:left; */
+  /* display:flex; */
+  /* align-items: center; */
   padding: 5px;
   border-radius: 7px;
-  padding-left: 8px;
-  padding-right: 8px;
-  border-color: white;
-  width: 144px;
+  padding-left: 14px;
+  padding-right: 14px;
+  /* border-color: white; */
+  width: 250px;
   height: 40px;
   margin: 12px 5px 12px 0;
 }
 
 .logo-icon { 
   color: white;
-  height: 17px;
-  width: 17px;
-  font-size: 17px;
   margin-right: 8px;
 }
 
 .logo-title {
   /* override antd Typography style */
+  display: inline;
   margin: 0px !important;
   color: white !important;
   user-select: none;

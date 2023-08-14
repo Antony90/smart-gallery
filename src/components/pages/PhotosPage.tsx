@@ -2,7 +2,7 @@ import PhotoCollage from "../photos/PhotoCollage";
 
 import React, { useState } from "react";
 // import { createAlbum } from "../../store/actions/albumActions";
-import { FileInfo, handleUpload } from "../../client/photos";
+import { FileInfo } from "../../client/photos";
 
 import AlbumDialog from "../albums/AlbumDialog";
 // import FileBase64 from "react-file-base64";
@@ -132,12 +132,6 @@ const PhotosPage = () => {
         // @ts-ignore
         onClick={(e) => fileUploadInput.current.click()}
       />
-        {/* <Button
-          tye="primary"
-          icon={<CloudUploadOutlined />}
-          onClick={(e) => onClickUpload()}
-          style={{ marginTop: 16 }}
-        />p */}
       <div style={{ position: 'fixed', right: 94 }}>
       </div>
     </>
