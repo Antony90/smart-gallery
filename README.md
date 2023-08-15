@@ -1,13 +1,33 @@
-# Smart Gallery
 
-An AI powered gallery web app to conveniently organize your photos. This includes:
+<h1 align="center">Smart Gallery</h1>
 
-- **Image classification and tagging** - Search for images in natural language with descriptions.
-- **Face detection and similarity** - Uploaded photos are grouped by similar faces
+<p align="center">
+An AI powered gallery web app to conveniently organize your photos.
+</p>
+<p align="center">
+A React app for my <a href="https://github.com/Antony90/image-scene-classifier/">Machine Learning based image REST API</a>.
+</p>
 
-A React app for my [Machine Learning based image REST API](https://github.com/Antony90/image-scene-classifier/) backend.
+---
 
-### Frontend
+### Machine Learning features:
+
+- **Image classification and tagging** - Search for images in natural language descriptions.
+- **Face detection and similarity** - Uploaded photos are grouped by similar faces and visualized with face bounding boxes.
+
+### Photo Gallery features:
+- **Photo Albums** - Select photos to group together or use automatically generated albums based on tags, faces or date uploaded.
+- **Masonry Gallery layout** - A natural tiling layout for photos
+- **Filtering by metadata** - Any photo metadata
+
+### TODO features:
+- Statistics on ML data. e.g. describe distribution of image tags.
+- Use face bounding boxes for a "generate collage" tool
+- Simple photo effects button e.g. contrast, shadow, brightness, filters  
+
+---
+
+### Frontend tech
 
 - ant.design - React UI library
 - Redux - UI state management
@@ -29,7 +49,7 @@ Source code and installation [here](https://github.com/Antony90/image-scene-clas
 
 ### Screenshots
 
-
+To be added soon.
 
 ## Usage
 
@@ -44,7 +64,7 @@ Start the http server.
 
 ```npm run start```
 
-Start the [backend](https://github.com/image-scene-classifier). Defaults to port 8000.
+Also start the [backend](https://github.com/image-scene-classifier). Defaults to port 8000.
 
 ### Environment variables
 
