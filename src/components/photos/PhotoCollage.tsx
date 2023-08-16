@@ -97,7 +97,8 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
         <Gallery
           photos={photoArray}
           renderImage={(props: any) => <PhotoTile {...props} />}
-          margin={6}
+          margin={10}
+          targetRowHeight={400}
           onClick={(_: any, photo: GalleryPhoto) => onClickPhoto(photo.index)}
         /> 
       : <Result

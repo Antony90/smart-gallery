@@ -14,6 +14,9 @@ import {
   HandleUploadReturnType,
 } from "../client/photos";
 import { processFaces } from "../client/process";
+
+import { photos as testPhotos } from "../data/test";
+
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
 
@@ -30,6 +33,10 @@ const initialState: PhotosState = {
 export const fetchPhotos = createAsyncThunk<PhotosMap, string, Config>(
   "photo/fetch",
   async (userID) => {
+    console.log(process.env);
+    if (process.env.REACT_APP_TEST) {
+      return testPhotos;
+    }
     return getPhotos(userID);
   }
 );
@@ -143,6 +150,9 @@ export const removePhotoTag = createAsyncThunk<PhotoIDTag, PhotoIDTag, Config>(
   }
 );
 
+/**
+ * Photo reducer to upload, fetch, delete, edit photos
+ */
 const photosSlice = createSlice({
   name: "photo",
   initialState,

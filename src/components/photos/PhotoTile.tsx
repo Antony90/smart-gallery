@@ -9,7 +9,7 @@ import { Photo } from "../../models/Photo";
 const { Text } = Typography;
 
 const tileStyle: CSSProperties = {
-  margin: 6,
+  margin: 10,
   padding: 0,
   transition: 'transform .5s ease 0s',
   boxShadow: '0 2px 6px rgb(0 0 0 / 0.6)',
@@ -19,13 +19,24 @@ const tileStyle: CSSProperties = {
 
 const tagsStyle: CSSProperties = {
   position: 'absolute',
-  bottom: 5,
-  left: 8,
+  bottom: 8,
+  left: 10,
   right: 0,
   fontWeight: "none",
   textAlign: "left",
   textTransform: "none",
   color: 'white'
+};
+
+const headerStyle: CSSProperties = {
+  position: 'absolute',
+  top: 8,
+  left: 10,
+  right: 0,
+  fontWeight: "none",
+  textAlign: "left",
+  textTransform: "none",
+  color: 'white',
 };
 
 const selectedIconStyle: {[key: string]: CSSProperties} = {
@@ -52,6 +63,13 @@ const tagsShadowStyle: CSSProperties = {
   right: 0,
   background: "linear-gradient(transparent, rgba(0,0,0,0.5))",
 };
+const headerShadowStyle: CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  background: "linear-gradient(rgba(0,0,0,0.5), transparent)",
+};
 
 
 const PhotoTile = ({ photo, onClick, index }: RenderImageProps<Photo & { selected: boolean }>) => {
@@ -67,7 +85,7 @@ const PhotoTile = ({ photo, onClick, index }: RenderImageProps<Photo & { selecte
 
   return (
     <div
-      style={{ height, width, ...tileStyle, transform: hover ? 'scale(1.02)' : 'scale(1)', }}
+      style={{ height, width, ...tileStyle, transform: hover ? 'scale(0.98)' : 'scale(1)', }}
       onMouseOver={() => setHover(true)}
       onMouseOut={() => setHover(false)}
     >
@@ -86,6 +104,14 @@ const PhotoTile = ({ photo, onClick, index }: RenderImageProps<Photo & { selecte
       }
       <Button block type="text" style={{ height }} onClick={handleClick} />
       <div style={{ ...tagsShadowStyle, top: height * 0.8 }} />
+      
+      {hover && (
+        <>
+          <div style={{ ...headerShadowStyle, bottom: height * 0.8 }} />
+          <Text style={headerStyle}>{name}</Text>
+        </>
+      )}
+
       <Text
         strong
         style={tagsStyle}
