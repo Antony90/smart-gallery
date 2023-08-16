@@ -1,7 +1,7 @@
 import { useState, CSSProperties } from "react";
 
 import { Button, Typography } from "antd";
-import { CheckOutlined } from "@ant-design/icons";
+import { CheckOutlined, InfoOutlined } from "@ant-design/icons";
 import { RenderImageProps } from "react-photo-gallery";
 
 import { Photo } from "../../models/Photo";
@@ -11,7 +11,7 @@ const { Text } = Typography;
 const tileStyle: CSSProperties = {
   margin: 10,
   padding: 0,
-  transition: 'transform .5s ease 0s',
+  transition: 'transform .13s ease 0s',
   boxShadow: '0 2px 6px rgb(0 0 0 / 0.6)',
   borderRadius: 8,
   overflow: 'hidden'
@@ -72,11 +72,17 @@ const headerShadowStyle: CSSProperties = {
 };
 
 
-const PhotoTile = ({ photo, onClick, index }: RenderImageProps<Photo & { selected: boolean }>) => {
+const PhotoTile = ({ 
+  photo, 
+  onClick, 
+  index,
+  handleInfoClick
+}: RenderImageProps<Photo & { selected: boolean }> & { handleInfoClick: CallableFunction }) => {
   const { height, width, src, name, tags, selected } = photo;
   const [hover, setHover] = useState(false);
+  const [infoModalVis, setInfoModalVis] = useState(false);
 
-  // wrapper function to handle null onClick function
+  // wrapper function to handle null onClick function, before loaded
   const handleClick = (e: React.MouseEvent<Element, MouseEvent>) => {
     if (onClick === null) return
     // 0 index since react-photo-gallery's internal value is unused
@@ -85,7 +91,7 @@ const PhotoTile = ({ photo, onClick, index }: RenderImageProps<Photo & { selecte
 
   return (
     <div
-      style={{ height, width, ...tileStyle, transform: hover ? 'scale(0.98)' : 'scale(1)', }}
+      style={{ height, width, ...tileStyle, transform: hover ? 'scale(0.993)' : 'scale(1)', }}
       onMouseOver={() => setHover(true)}
       onMouseOut={() => setHover(false)}
     >
@@ -104,11 +110,25 @@ const PhotoTile = ({ photo, onClick, index }: RenderImageProps<Photo & { selecte
       }
       <Button block type="text" style={{ height }} onClick={handleClick} />
       <div style={{ ...tagsShadowStyle, top: height * 0.8 }} />
-      
+
       {hover && (
         <>
           <div style={{ ...headerShadowStyle, bottom: height * 0.8 }} />
           <Text style={headerStyle}>{name}</Text>
+          <Button
+            type="default" 
+            shape="circle" 
+            size="small"
+            onClick={() => handleInfoClick(index)}
+            style={{ 
+              background: "transparent", 
+              color: "white", 
+              position: 'absolute', 
+              top: 15, 
+              right: 15 
+            }} 
+            icon={<InfoOutlined />}
+          />
         </>
       )}
 

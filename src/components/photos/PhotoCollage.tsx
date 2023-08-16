@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RPGallery, { GalleryI, PhotoProps, RenderImageProps } from 'react-photo-gallery';
-// import "react-image-lightbox/style.css";
+import "./PhotoCollage.css";
 
 import PhotoTile from "./PhotoTile";
 import PhotoView from "./PhotoView";
 
-import { Button, Card, Result, Typography } from "antd";
-import { BulbOutlined } from "@ant-design/icons";
+import { Button, Card, Col, Descriptions, Image, Modal, Result, Row, Space, Statistic, Typography } from "antd";
+import { BulbOutlined, ColumnHeightOutlined, ColumnWidthOutlined, DownloadOutlined, InfoCircleFilled, InfoCircleOutlined, LinkOutlined, RotateLeftOutlined, RotateRightOutlined, SwapOutlined, ZoomInOutlined, ZoomOutOutlined } from "@ant-design/icons";
 
 import { useAppDispatch, useAppSelector } from "../../store";
 import { selectPhoto, selectSelectedPhotos } from "../../store/photos";
@@ -32,6 +32,7 @@ type GalleryPhoto = {
   }> | null;
 }
 
+
 const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
   const selectedPhotoIDs = useAppSelector(selectSelectedPhotos);
   const dispatch = useAppDispatch();
@@ -39,7 +40,7 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
   // Use an array of photo IDs to navigate gallery by 
   // increasing/decreasing the current photo index by 1
   const photoIDs = Object.keys(photos);
-  const [photoIndex, setPhotoIdx] = useState(-1); // Initially hides photo modal
+  const [modalIdx, setModalView] = useState(-1);
   // const open = photoIndex !== -1; // Whether the photo view modal is open
 
   // Make object writeable using spread operator
@@ -50,14 +51,6 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
     }  
   ));
 
-  // If not in select mode, open photo modal by setting photo index to a non-negative number
-  const onClickPhoto = (index: number) => {
-    if (isSelectMode) {
-      dispatch(selectPhoto(photoIDs[index]));
-    } else {
-      setPhotoIdx(index);
-    }
-  }
 
 
 
@@ -88,20 +81,105 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
   //     onClose={() => setPhotoIdx(-1)}
   //   />
   // ) : (<></>)
+
+  // whether each photo should have it's preview popup shown
+  
+  const [previewIdx, setPreviewIdx] = useState(-1);
+  
+  
+  // If not in select mode, open photo modal by setting photo index to a non-negative number
+  const onClickPhoto = (index: number) => {
+    if (isSelectMode) {
+      dispatch(selectPhoto(photoIDs[index]));
+    } else {
+      // toggle preview
+      setPreviewIdx(index);
+    }
+  }
+
+  const onDownload = (photo: Photo) => {
+    fetch(photo.src)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = photo.name + '.png';
+        document.body.appendChild(link);
+        link.click();
+        URL.revokeObjectURL(url);
+        link.remove();
+      });
+  };
+
+
+  const renderImage = (props: RenderImageProps<Photo & { selected: boolean; }>) => (
+    <PhotoTile {...props} handleInfoClick={() => setModalView(props.index)} />
+  );
+
+
+  const previewPhoto = photoArray[previewIdx];
+  const modalPhoto = photoArray[modalIdx];
   
   return (
     <>
       {/* {photoView} */}
-      {photoIndex > 0 && <div>Photo View</div>}
-      {photoArray.length > 0 ? 
-        <Gallery
-          photos={photoArray}
-          renderImage={(props: any) => <PhotoTile {...props} />}
-          margin={10}
-          targetRowHeight={400}
-          onClick={(_: any, photo: GalleryPhoto) => onClickPhoto(photo.index)}
-        /> 
-      : <Result
+      {/* {photoIndex > 0 && <div>Photo View</div>} */}
+      <Image.PreviewGroup preview={{
+        visible: previewIdx >= 0,
+        current: previewIdx,
+        onVisibleChange: (value, prevVal) => {
+          setPreviewIdx(-1);
+        },
+        onChange: (current, prevCurrent) => {
+          setPreviewIdx(current);
+        },
+        imageRender: (originalNode, { transform, current }) => {
+          return originalNode;
+        },
+        toolbarRender: (
+          _,
+          {
+            transform: { scale },
+            actions: { onFlipY, onFlipX, onRotateLeft, onRotateRight, onZoomOut, onZoomIn },
+          },
+        ) => (
+          <Space size={12} className="toolbar-wrapper">
+            <DownloadOutlined onClick={() => onDownload(previewPhoto)} />
+            <SwapOutlined rotate={90} onClick={onFlipY} />
+            <SwapOutlined onClick={onFlipX} />
+            <RotateLeftOutlined onClick={onRotateLeft} />
+            <RotateRightOutlined onClick={onRotateRight} />
+            <ZoomOutOutlined disabled={scale === 1} onClick={onZoomOut} />
+            <ZoomInOutlined disabled={scale === 50} onClick={onZoomIn} />
+          </Space>)
+      }}>
+        {photoArray.map((photo, i) => {
+          return (
+            <Image
+              key={i}
+              style={{ display: 'none' }}
+              src={photo.src}
+              preview={{
+                visible: (previewIdx == i),
+                src: photo.src
+              }}
+            />
+          )
+        })}
+      </Image.PreviewGroup>
+
+      {photoArray.length > 0 ? (
+        <div style={{ marginTop: -17 }}>
+          <Gallery
+            photos={photoArray}
+            renderImage={renderImage}
+            margin={10}
+            targetRowHeight={400}
+            onClick={(_: any, photo: GalleryPhoto) => onClickPhoto(photo.index)}
+          /> 
+        </div>
+      ) : <Result
           title="No Photos"
           subTitle="Upload a photo to your gallery."
           icon={<BulbOutlined />}
@@ -112,6 +190,50 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
           ]}
         />
       }
+      <Modal 
+        open={modalIdx >= 0}
+        title={<><InfoCircleOutlined style={{ paddingRight: 6 }}/> <span>Details</span></>}
+        onCancel={() => setModalView(-1)}
+        closable={false}
+        cancelText={"Close"}
+        okText={"Download"}
+        okType="primary"
+        width={700}
+        // icon={}
+      >
+        {modalPhoto && 
+          <Row gutter={24}>
+            <Col span={8}>
+              <Statistic title="Filename" value={modalPhoto.name}/>
+            </Col>
+            <Col span={16}>
+              <Statistic title="Tags" value={modalPhoto.tags.join(", ")}/>
+            </Col>
+            <Col span={8}>
+              <Statistic title="Height" value={modalPhoto.height} suffix="px" prefix={<ColumnHeightOutlined/>}/>
+            </Col>
+            <Col span={8}>
+              <Statistic title="Width" value={modalPhoto.width} suffix="px" prefix={<ColumnWidthOutlined/>}/>
+            </Col>
+            <Col span={24}>
+              {/* <Button> */}
+              <Statistic title="URL" valueStyle={{ display: 'none'}} value={""}/>
+              <LinkOutlined style={{ paddingRight: 6 }}/>
+              <a href={modalPhoto.src}>{modalPhoto.src}</a>
+              {/* </Button> */}
+            </Col>
+          </Row>
+        //   <Descriptions.Item label="Name">{}</Descriptions.Item>
+        //   <Descriptions.Item label="" >{modalPhoto.tags.join(", ")}</Descriptions.Item>
+        //   <Descriptions.Item label="Created At">
+        //     <Statistic title="CreatedAt" value={1128} prefix={<LikeOutlined />} />{modalPhoto.createdAt.toString()}
+        //   </Descriptions.Item>
+        //   <Descriptions.Item label="Height" >{modalPhoto.height}</Descriptions.Item>
+        //   <Descriptions.Item label="Width" >{modalPhoto.width}</Descriptions.Item>
+        //   <Descriptions.Item label="URL" ><Link</Descriptions.Item>
+        // </Descriptions>
+      }
+      </Modal>
     </>
   );
 };
@@ -139,3 +261,5 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
 
 
 export default PhotoCollage;
+
+
