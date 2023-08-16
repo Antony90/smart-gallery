@@ -67,7 +67,7 @@ const Layout: React.FC = () => {
         />
       </Sider>
       <ADLayout>
-        <Content> {/* style={{ margin: '75px 50px' }} */}
+        <Content style={{ margin: '20px 20px' }}>
           <Outlet />
           <FloatButton.BackTop style={{ left: 24 }} />
         </Content>

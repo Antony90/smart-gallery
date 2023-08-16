@@ -15,7 +15,7 @@ import {
 } from "../client/photos";
 import { processFaces } from "../client/process";
 
-import { photos as testPhotos } from "../data/test";
+import { photos as testPhotos } from "../data/photos";
 
 import { toast } from "react-toastify";
 import { AxiosError } from "axios";
@@ -230,7 +230,7 @@ const photosSlice = createSlice({
         }
       })
       .addCase(deleteSelectedPhotos.fulfilled, (state, action) => {
-        console.log("Deleted selected photos");
+        toast.success(`Deleted ${action.payload.length} selected photos`);
       });
   },    
 });
@@ -238,6 +238,7 @@ const photosSlice = createSlice({
 
 export const selectAllPhotos = (state: RootState) => state.photos.all;
 export const selectSelectedPhotos = (state: RootState) => state.photos.selected;
+export const selectNumSelectedPhotos = (state: RootState) => state.photos.selected.length;
 
 export const { selectPhoto, clearSelection } = photosSlice.actions;
 export default photosSlice.reducer;

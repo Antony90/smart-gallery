@@ -6,7 +6,7 @@ import { FileInfo } from "../../client/photos";
 
 import AlbumDialog from "../albums/AlbumDialog";
 // import FileBase64 from "react-file-base64";
-import { clearSelection, deleteSelectedPhotos, selectAllPhotos, uploadPhotos } from "../../store/photos";
+import { clearSelection, deleteSelectedPhotos, selectAllPhotos, selectNumSelectedPhotos, uploadPhotos } from "../../store/photos";
 import { useAppDispatch, useAppSelector } from "../../store";
 import { userID } from "../../firebase";
 
@@ -14,6 +14,7 @@ import { userID } from "../../firebase";
 import { Button, FloatButton, Upload, UploadFile } from "antd";
 import { CloseOutlined, CloudUploadOutlined, DeleteOutlined, FolderAddOutlined, SelectOutlined } from "@ant-design/icons";
 import { createAlbum } from "../../store/albums";
+import { toast } from "react-toastify";
 
 type FloatButtonGroupProps = {
   selectMode: boolean,
@@ -29,6 +30,7 @@ const PhotosPage = () => {
   const [openAlbumDialog, setOpenAlbumDialog] = useState(false);
   const dispatch = useAppDispatch();
   const photos = useAppSelector(selectAllPhotos);
+  const numSelected = useAppSelector(selectNumSelectedPhotos);
 
   const createAlbum_ = (name: string) => {
     dispatch(createAlbum({ name, userID }));
@@ -83,12 +85,14 @@ const PhotosPage = () => {
       <FloatButton.Group
         shape={selectMode ? "square" : "circle"}
         style={{ right: 24, bottom: 108 }}
+        
       >
         {selectMode &&
           <>
             <FloatButton
               tooltip="Delete"
               icon={<DeleteOutlined />}
+              badge={{ count: numSelected }}
               onClick={() => {
                 dispatch(deleteSelectedPhotos(userID));
                 setSelectMode(false);
@@ -109,7 +113,11 @@ const PhotosPage = () => {
         <FloatButton
           icon={!selectMode ? <SelectOutlined /> : <CloseOutlined />}
           tooltip={selectMode ? "Cancel" : "Select"}
-          onClick={() => setSelectMode(mode => !mode)}
+          onClick={() => {
+            setSelectMode(mode => !mode);
+            dispatch(clearSelection());
+          
+          }}
         />
 
       </FloatButton.Group>
@@ -128,6 +136,7 @@ const PhotosPage = () => {
       />
       <FloatButton
         tooltip="Upload"
+        type="primary"
         icon={<CloudUploadOutlined />}
         // @ts-ignore
         onClick={(e) => fileUploadInput.current.click()}
@@ -138,31 +147,4 @@ const PhotosPage = () => {
   );
 };
 
-
-
-// const mapStateToProps = (state) => {
-//     return {
-//         photos: state.photos.all,
-//     };
-// };
-
-// const mapDispatchToProps = (dispatch) => ({
-//     createAlbum: (albumName) => {
-//         dispatch(createAlbum(albumName));
-//         dispatch(clearPhotoSelection);
-//     },
-//     deleteSelectedPhotos: () => dispatch(deleteSelectedPhotos()),
-//     uploadPhotos: photos => dispatch(uploadPhotos(photos))
-// });
-
 export default PhotosPage;
-
-// connect(state => ({ photos: state.firestore.ordered.photos })),
-// firestoreConnect(state => {
-//     // console.log(state);
-//     // const where = (state.filterSort && [
-//     //     ['name', '>=', state.filterSort.filter],
-//     //     [state.filterSort.filter, 'in', 'tags']
-//     // ]);
-//     return [{ collection: 'photos', orderBy: ['createdAt', 'desc'] }]
-// }),

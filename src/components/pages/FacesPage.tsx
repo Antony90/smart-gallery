@@ -5,11 +5,10 @@ import PersonCard from '../people/PersonCard';
 
 const FacesPage = () => {
   const people = useAppSelector(selectPeople);
-
   return (
-    <Row justify="space-around">
+    <Row justify="center" align="top" gutter={60}>
       {Object.values(people).map(person => (
-        <Col span={8}>
+        <Col span={6}>
           <PersonCard {...person} />
         </Col>
       ))}

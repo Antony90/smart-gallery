@@ -8,6 +8,7 @@ import {
   renamePerson as renamePersonRequest,
   deleteFace as deleteFaceRequest,
 } from "../client/process";
+import { faces } from "../data/faces";
 
 const initialState: People = {};
 
@@ -16,6 +17,9 @@ export const fetchPeople = createAsyncThunk<People, string, Config>(
   "face/fetchPeople",
   async (userID, { getState }) => {
     // fetch photos
+    if (process.env.REACT_APP_TEST) {
+      return faces;
+    }
     return await getPeople(userID);
   }
 );

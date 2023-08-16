@@ -9,7 +9,7 @@ import { Photo } from "../../models/Photo";
 const { Text } = Typography;
 
 const tileStyle: CSSProperties = {
-  margin: 10,
+  margin: 8,
   padding: 0,
   transition: 'transform .13s ease 0s',
   boxShadow: '0 2px 6px rgb(0 0 0 / 0.6)',

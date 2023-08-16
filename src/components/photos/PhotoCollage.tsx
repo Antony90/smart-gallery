@@ -51,39 +51,6 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
     }  
   ));
 
-
-
-
-  // const photoTiles = Object.entries(photos).map(([id, photo], i) => (
-  //   <PhotoTile
-  //     id={id}
-  //     key={id}
-  //     src={photo.src}
-  //     imgName={photo.name}
-  //     tags={photo.tags}
-  //     onClick={onClickPhoto(i)}
-  //     selected={selectedPhotoIDs.find(photoID => photoID === id)}
-  //   />
-  // ));
-
-  // Photo modal, appears when photo is clicked and not in select mode
-  // const photoView = open ? (
-  //   <PhotoView
-  //     photo={photos[photoIDs[photoIndex]]}
-  //     open={open}
-  //     // Update current image index, navigates to next/previous photo
-  //     onClickNext={(offset: number) => {
-  //       // TODO: store photo IDs in photo store so index can be incremented
-  //       // and next photo can be selected
-  //       const n = photoIDs.length;
-  //       setPhotoIdx(idx => ((idx + offset % n) + n) % n)
-  //     }}
-  //     onClose={() => setPhotoIdx(-1)}
-  //   />
-  // ) : (<></>)
-
-  // whether each photo should have it's preview popup shown
-  
   const [previewIdx, setPreviewIdx] = useState(-1);
   
   
@@ -123,19 +90,14 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
   
   return (
     <>
-      {/* {photoView} */}
-      {/* {photoIndex > 0 && <div>Photo View</div>} */}
       <Image.PreviewGroup preview={{
         visible: previewIdx >= 0,
         current: previewIdx,
-        onVisibleChange: (value, prevVal) => {
+        onVisibleChange: () => {
           setPreviewIdx(-1);
         },
-        onChange: (current, prevCurrent) => {
+        onChange: (current) => {
           setPreviewIdx(current);
-        },
-        imageRender: (originalNode, { transform, current }) => {
-          return originalNode;
         },
         toolbarRender: (
           _,
@@ -174,8 +136,8 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
           <Gallery
             photos={photoArray}
             renderImage={renderImage}
-            margin={10}
-            targetRowHeight={400}
+            margin={8}
+            targetRowHeight={300}
             onClick={(_: any, photo: GalleryPhoto) => onClickPhoto(photo.index)}
           /> 
         </div>
@@ -223,41 +185,11 @@ const PhotoCollage: React.FC<PhotoListProps> = ({ photos, isSelectMode }) => {
               {/* </Button> */}
             </Col>
           </Row>
-        //   <Descriptions.Item label="Name">{}</Descriptions.Item>
-        //   <Descriptions.Item label="" >{modalPhoto.tags.join(", ")}</Descriptions.Item>
-        //   <Descriptions.Item label="Created At">
-        //     <Statistic title="CreatedAt" value={1128} prefix={<LikeOutlined />} />{modalPhoto.createdAt.toString()}
-        //   </Descriptions.Item>
-        //   <Descriptions.Item label="Height" >{modalPhoto.height}</Descriptions.Item>
-        //   <Descriptions.Item label="Width" >{modalPhoto.width}</Descriptions.Item>
-        //   <Descriptions.Item label="URL" ><Link</Descriptions.Item>
-        // </Descriptions>
       }
       </Modal>
     </>
   );
 };
-
-
-// const mapStateToProps = (state, props) => {
-//     const photos = props.photos;
-//     const filter = state.filter.toLowerCase();
-
-//     const filteredPhotos = filter
-//     ? photos.filter(({ name, tags }) => {
-//         const includesName = name.toLowerCase().includes(filter);
-//         const includesAnyTag = tags.some((tag) =>
-//         tag.toLowerCase().includes(filter)
-//         );
-//         return includesName || includesAnyTag;
-//     })
-//     : photos;
-
-//     return {
-//         photos: filteredPhotos,
-//         selectedPhotos: state.photos.selected
-//     };
-// };
 
 
 export default PhotoCollage;
