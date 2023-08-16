@@ -15,6 +15,8 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/pluralize": "^0.0.29",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
     "antd": "^5.0.3",
     "axios": "^0.27.2",
     "firebase": "^9.9.2",
@@ -27,12 +29,19 @@
     "react-minimal-pie-chart": "^8.3.0",
     "react-photo-gallery": "^8.0.0",
     "react-photoswipe-gallery": "^2.2.2",
+    "react-redux": "^8.1.2",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
     "react-transition-group": "^4.4.5",
     "redux-thunk": "^2.4.1",
     "web-vitals": "^2.1.4"
+  },
+  "overrides": {
+    "react-photo-gallery": {
+      "react": "18.2.0",
+      "react-dom": "18.2.0"
+    }
   },
   "scripts": {
     "start": "react-scripts start",
