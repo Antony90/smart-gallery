@@ -29,7 +29,8 @@ interface Action {
   date: Date;
   icon: ReactNode;
 }
-
+const paddingTop = 10;
+const fontSize = 40;
 class ClassifyAction implements Action {
   title: string;
   description: ReactNode;
@@ -47,7 +48,7 @@ class ClassifyAction implements Action {
         <Text code>{String(classifyResult).replace(",", ", ")}</Text>.
       </Text>
     );
-    this.icon = <FileImageTwoTone style={{ fontSize: 54 }} twoToneColor="orange" />
+    this.icon = <FileImageTwoTone style={{ fontSize, paddingTop }} twoToneColor="orange" />
   }
 }
 
@@ -67,7 +68,7 @@ class NewPersonAction implements Action {
     )
     this.responseTime = responseTime;
     this.date = date;
-    this.icon = <IdcardTwoTone style={{ fontSize: 54 }} twoToneColor="green" />
+    this.icon = <IdcardTwoTone style={{ fontSize, paddingTop }} twoToneColor="#dd00dd" />
   }
 }
 
@@ -89,7 +90,7 @@ class AddPhotoToPersonAction implements Action {
         <Text code>{personID}</Text>.
       </Text>
     );
-    this.icon = <AppstoreTwoTone style={{ fontSize: 54 }} twoToneColor="blue" />
+    this.icon = <AppstoreTwoTone style={{ fontSize, paddingTop }} twoToneColor="blue" />
   }
 }
 
@@ -120,7 +121,7 @@ class DetectFaceAction implements Action {
         </Text>.
       </Text>
     );
-    this.icon = <SmileTwoTone style={{ fontSize: 54 }} twoToneColor="#11dd00" />
+    this.icon = <SmileTwoTone style={{ fontSize, paddingTop }} twoToneColor="#11dd00" />
   }
 }
 
@@ -142,7 +143,7 @@ class ComputeError implements Action {
         Error reponse: <Text code>{error}</Text>.
       </Text>
     );
-    this.icon = <ExclamationCircleTwoTone style={{ fontSize: 54 }} twoToneColor="red" />
+    this.icon = <ExclamationCircleTwoTone style={{ fontSize, paddingTop }} twoToneColor="red" />
   }
 }
 

@@ -1,6 +1,6 @@
-import { LikeOutlined, MessageOutlined, StarOutlined } from '@ant-design/icons';
+import { LikeOutlined, MessageOutlined, OrderedListOutlined, QuestionOutlined, StarOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
-import { Avatar, List, Space, Typography } from 'antd';
+import { Avatar, Button, List, Space, Statistic, Typography } from 'antd';
 
 import { actions } from "../../data/actions"
 import { checkOnline } from '../../client/actions';
@@ -37,49 +37,30 @@ const AIActionsPage = () => {
       itemLayout="vertical"
       size="small"
       pagination={{
-        onChange: (page) => {
-          console.log(page);
-        },
-        pageSize: 4,
+        pageSize: 5,
+        position: "bottom",
+        align: "center",
+        style: { margin: -24 }
       }}
       dataSource={actions}
       footer={
         <div>
-          <b>Status</b> {online ? "online" : "offline"} | Last check: {lastCheck.toLocaleTimeString()}
+          <b>Status</b> {online ? "online" : "offline"} | Last check {lastCheck.toLocaleTimeString()}
         </div>
       }
       renderItem={(action) => (
         <List.Item
           key={action.title}
           actions={[
-            <IconText
-              icon={StarOutlined}
-              text="156"
-              key="list-vertical-star-o"
-            />,
-            <IconText
-              icon={LikeOutlined}
-              text="156"
-              key="list-vertical-like-o"
-            />,
-            <IconText
-              icon={MessageOutlined}
-              text="2"
-              key="list-vertical-message"
-            />,
+            <Button type="text" icon={<QuestionOutlined />} />,
+            <Button type="text" icon={<OrderedListOutlined />} />
           ]}
-          extra={
-            <img
-              width={272}
-              alt="logo"
-              src="https://gw.alipayobjects.com/zos/rmsportal/mqaQswcyDLcXyDKnZfES.png"
-            />
-          }
+          style={{ padding: 3 }}
         >
           <List.Item.Meta
             avatar={action.icon}
             title={<a href={""}>{action.title}</a>}
-            description={`${action.date.toDateString()} | ${action.date.toTimeString().substring(0, 12)}`}
+            description={`${action.date.toDateString()} | ${action.date.toTimeString().substring(0, 12)} (${action.responseTime} ms)`}
           />
           {action.description}
         </List.Item>
