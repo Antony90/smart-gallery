@@ -29,7 +29,7 @@ interface Action {
   date: Date;
   icon: ReactNode;
 }
-const paddingTop = 10;
+const paddingTop = 6;
 const fontSize = 40;
 class ClassifyAction implements Action {
   title: string;
@@ -62,7 +62,7 @@ class NewPersonAction implements Action {
     this.title = `New Person '${personID}'`;
     this.description = (
       <Text>
-        Created new person <Text>{personID}</Text>from photos
+        Created new person <Text code>{personID}</Text> from photos
         <Text code>{String(photoNames).replace(",", ", ")}</Text>.
       </Text>
     )
