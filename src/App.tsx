@@ -22,6 +22,8 @@ import { fetchPeople } from "./store/people";
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import FacesPage from "./components/pages/FacesPage";
 import Layout from "./components/Layout";
+import AIDataOverviewPage from "./components/pages/AIDataOverviewPage";
+import AIActionsPage from "./components/pages/AIActionsPage";
 
 const router = createBrowserRouter([
     {
@@ -29,11 +31,13 @@ const router = createBrowserRouter([
       element: <Layout />,
       children: [
         {
+          path: "/ai/data",
+          element: <AIDataOverviewPage />,
+        }, {
+          path: "/ai/actions",
+          element: <AIActionsPage />,
+        }, {
           index: true,
-          element: <Dashboard />,
-        },
-        {
-          path: "photos",
           element: <PhotosPage />//createAlbum={null} deleteSelectedPhotos={null} />
         }, {
           path: "faces",

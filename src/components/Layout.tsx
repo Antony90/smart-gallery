@@ -1,7 +1,7 @@
 import './Layout.css';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { Layout as ADLayout, Breadcrumb, Menu, Typography, Space, FloatButton, theme } from 'antd';
-import { CodepenOutlined, DingtalkOutlined, FolderOpenOutlined, HomeOutlined, PictureOutlined, TeamOutlined } from '@ant-design/icons';
+import { BarChartOutlined, CodepenOutlined, DingtalkOutlined, FolderOpenOutlined, HomeOutlined, NotificationOutlined, PictureOutlined, RobotOutlined, TeamOutlined } from '@ant-design/icons';
 import { blue } from '@ant-design/colors';
 import { useState } from 'react';
 
@@ -11,13 +11,24 @@ const { Title, Text } = Typography;
 
 const menuItems = [
   {
-    label: 'Home',
-    key: '/',
-    icon: <HomeOutlined />
+    label: 'AI',
+    key: 'ai',
+    icon: <RobotOutlined />,
+    children: [
+      {
+        label: 'Actions',
+        key: '/ai/actions',
+        icon: <NotificationOutlined />
+      }, {
+        label: 'Data Overview',
+        key: '/ai/data',
+        icon: <BarChartOutlined />
+      }
+    ]
   },
   {
     label: 'Photos',
-    key: '/photos',
+    key: '/',
     icon: <PictureOutlined />
   },
   {
@@ -57,6 +68,7 @@ const Layout: React.FC = () => {
 
         <Menu
           items={menuItems}
+          openKeys={["ai"]}
           mode="inline"
           theme="dark"
           selectedKeys={[selected]}
@@ -67,6 +79,7 @@ const Layout: React.FC = () => {
         />
       </Sider>
       <ADLayout>
+        <Header style={{ padding: 0, background: "white" }} />
         <Content style={{ margin: '20px 20px' }}>
           <Outlet />
           <FloatButton.BackTop style={{ left: 24 }} />
