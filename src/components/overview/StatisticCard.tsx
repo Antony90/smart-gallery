@@ -17,7 +17,7 @@ const StatisticCard: React.FC<{
             <Text type="secondary" strong style={{ fontSize: 15 }}>
               {title}
             </Text>
-            <Title level={3}>{value}</Title>
+            <Title level={2} style={{ marginTop: 10, marginBottom: 0  }}>{value}</Title>
           </Col>
           <Col xs={width}>
             <Button
