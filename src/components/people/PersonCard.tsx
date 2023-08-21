@@ -22,7 +22,7 @@ import { selectAllPhotos } from "../../store/photos";
 import Gallery from "react-photo-gallery";
 import { FolderOpenRounded, QuestionMarkRounded } from "@mui/icons-material";
 
-const PersonCard = ({ name, photoIDs }: Person) => {
+const PersonCard = ({ name, photoIDs, width }: Person & { width: number }) => {
   const allPhotos = useAppSelector(selectAllPhotos);
   const photos = photoIDs.map((id) => allPhotos[id]);
 
@@ -36,6 +36,7 @@ const PersonCard = ({ name, photoIDs }: Person) => {
     <Card
       hoverable
       bordered
+      style={{ width: width + 'px' }}
       actions={[
         <Tooltip title="Open">
           <Button type="text" icon={<ExpandAltOutlined key="open"/>} />

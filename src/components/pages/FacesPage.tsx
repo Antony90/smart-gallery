@@ -2,17 +2,20 @@ import { Col, Row } from 'antd';
 import { useAppSelector } from '../../store'
 import { selectPeople } from '../../store/people';
 import PersonCard from '../people/PersonCard';
+import { Masonry } from 'react-masonry'
 
+
+const cardWidth = 400;
 const FacesPage = () => {
   const people = useAppSelector(selectPeople);
   return (
-    <Row justify="center" align="top" gutter={60}>
+    <Masonry>
       {Object.values(people).map(person => (
-        <Col span={6}>
-          <PersonCard {...person} />
-        </Col>
+        <div style={{ width: '25%', paddingBottom: '20px' }}>
+          <PersonCard {...person} width={cardWidth} />
+        </div>
       ))}
-    </Row>
+    </Masonry>
   )
 }
 

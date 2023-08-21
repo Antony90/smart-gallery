@@ -24,11 +24,17 @@ const mark: Person = {
     name: "Mark Zuckerberg",
     photoIDs: Object.entries(photos).filter(([_, p]) => p.name.toLowerCase().includes("mark")).map(([id, p]) => id)
 } 
+const jim: Person = {
+    id: "2112",
+    name: "Jim Carrey",
+    photoIDs: Object.entries(photos).filter(([_, p]) => p.name.toLowerCase().includes("jim")).map(([id, p]) => id)
+} 
 
 export const faces = {
     "11": rock,
     "1": musk,
-    "1111": mark,
+    "1111a": mark,
     "111": keanu,
+    "1111": jim,
 } as People;
 
