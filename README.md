@@ -30,16 +30,35 @@ A React app for my <a href="https://github.com/Antony90/image-scene-classifier/"
 
 
 ### Screenshots
+<table>
+    <tr>
+        <td>Photos</td>
+        <td>Faces</td>
+    </tr>
+    <tr>
+        <td><img src="screenshots/photos.png" height=200></td>
+        <td><img src="screenshots/faces.png" height=200></td>
+    </tr>
+    <tr>
+        <td>ML Actions</td>
+        <td>Photo Preview</td>
+    </tr>
+    <tr>
+        <td><img src="screenshots/actions.png" height=200></td>
+        <td><img src="screenshots/preview.png" height=200></td>
+    </tr>
+    <tr>
+        <td>Photo Details</td>
+        <td>ML Data Overview</td>
+    </tr>
+    <tr>
+        <td><img src="screenshots/details.png" height=200></td>
+        <td><img src="screenshots/overview.png" height=200></td>
+    </tr>
 
-<span>
-    <img src="screenshots/photos.png" height=200>
-    <img src="screenshots/faces.png" height=200>
-    <img src="screenshots/actions.png" height=200>
-    <img src="screenshots/preview.png" height=200>
-    <img src="screenshots/details.png" height=200>
-    <img src="screenshots/overview.png" height=200>
+    
+</table>
 
-</span>
 
 
 ### Frontend tech
