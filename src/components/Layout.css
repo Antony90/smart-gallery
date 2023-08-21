@@ -33,3 +33,21 @@
   color: white !important;
   user-select: none;
 }
+/* 
+.header {
+  background: "white";
+  padding: 16;
+  padding-left: 30;
+  padding-right: 30;
+  height: 73;
+} */
+
+.header-buttons {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.header-buttons > *{
+  margin-left: 20px;
+}
