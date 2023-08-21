@@ -104,7 +104,7 @@ class DetectFaceAction implements Action {
   date: Date;
 
   constructor(photoName: string, boundingBoxes: number[][], responseTime: number, date: Date) {
-    this.title = `Detect face`;
+    this.title = `Detect ${boundingBoxes.length} face(s)`;
     this.responseTime = responseTime;
     this.date = date;
     this.description = (
@@ -134,7 +134,7 @@ class ComputeError implements Action {
   date: Date;
 
   constructor(subject: string, error: string, responseTime: number, date: Date) {
-    this.title = `Compute Error`;
+    this.title = `Compute error '${subject}'`;
     this.responseTime = responseTime;
     this.date = date;
     this.description = (
