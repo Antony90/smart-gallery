@@ -36,24 +36,24 @@ A React app for my <a href="https://github.com/Antony90/image-scene-classifier/"
         <td>Faces</td>
     </tr>
     <tr>
-        <td><img src="screenshots/photos.png" height=200></td>
-        <td><img src="screenshots/faces.png" height=200></td>
+        <td><img src="screenshots/photos.png" width=400></td>
+        <td><img src="screenshots/faces.png" width=400></td>
     </tr>
     <tr>
         <td>ML Actions</td>
         <td>Photo Preview</td>
     </tr>
     <tr>
-        <td><img src="screenshots/actions.png" height=200></td>
-        <td><img src="screenshots/preview.png" height=200></td>
+        <td><img src="screenshots/actions.png" width=400></td>
+        <td><img src="screenshots/preview.png" width=400></td>
     </tr>
     <tr>
         <td>Photo Details</td>
         <td>ML Data Overview</td>
     </tr>
     <tr>
-        <td><img src="screenshots/details.png" height=200></td>
-        <td><img src="screenshots/overview.png" height=200></td>
+        <td><img src="screenshots/details.png" width=400></td>
+        <td><img src="screenshots/overview.png" width=400></td>
     </tr>
 
     
