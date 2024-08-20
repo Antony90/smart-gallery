@@ -5,7 +5,7 @@
 An AI powered gallery web app to conveniently organize your photos.
 </p>
 <p align="center">
-A React app for my <a href="https://github.com/Antony90/image-scene-classifier/">Machine Learning based image REST API</a>.
+A React app for my <a href="https://github.com/Antony90/ml-photo-api/">Machine Learning based image REST API</a>.
 </p>
 
 ---
